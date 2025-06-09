@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
+import useCartStore from '@/store/useCartStore';
+import { toast } from 'sonner';
 
 export interface ProductProps {
   id: string;
@@ -33,22 +35,30 @@ export default function ProductCard({
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   
+  // Get addItem function from cart store
+  const { addItem } = useCartStore();
+  
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsWishlisted(!isWishlisted);
   };
   
-  const addToCart = (e: React.MouseEvent) => {
+  const addToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsAddingToCart(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Added to cart:', id);
+    try {
+      // Add product to cart with quantity 1
+      await addItem(id, 1);
+      toast.success(`${title} added to cart`);
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+      toast.error('Failed to add item to cart');
+    } finally {
       setIsAddingToCart(false);
-    }, 600);
+    }
   };
 
   // Format the price with 2 decimal places and currency symbol

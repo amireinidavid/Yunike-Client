@@ -1,9 +1,47 @@
-const API_URL = 'http://localhost:5001/api';
 import axios from 'axios';
+import useAuthStore from '@/store/useAuthStore';
+
+// Define BASE_URL without the /api since we'll include that in the endpoints
+export const API_BASE_URL = "http://localhost:5001/api";
+
+// Define API endpoints here including the /api prefix
+export const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    LOGOUT: '/auth/logout',
+    REFRESH_TOKEN: '/auth/refresh-token',
+    PROFILE: '/auth/profile',
+    UPDATE_PROFILE: '/auth/profile',
+    CREATE_PROFILE: '/auth/customer/create-profile',
+    VERIFY_EMAIL: '/auth/verify-email',
+    RESEND_VERIFICATION: '/auth/resend-verification',
+    FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD: '/auth/reset-password',
+    CHANGE_PASSWORD: '/auth/change-password',
+    VERIFY_LOGIN_OTP: '/auth/login/verify-otp',
+    RESEND_LOGIN_OTP: '/auth/login/resend-otp',
+    VERIFY_REGISTRATION_OTP: '/auth/register/verify-otp',
+    RESEND_REGISTRATION_OTP: '/auth/register/resend-otp'
+  },
+  CART: {
+    INITIALIZE: '/cart/initialize',
+    GET_CART: (cartId: string): string => `/cart/${cartId}`,
+    GET_USER_CART: '/cart/user',
+    GET_GUEST_CART: (guestId: string): string => `/cart/guest/${guestId}`,
+    ADD_ITEM: (cartId: string): string => `/cart/${cartId}/items`,
+    UPDATE_ITEM: (cartId: string, itemId: string): string => `/cart/${cartId}/items/${itemId}`,
+    REMOVE_ITEM: (cartId: string, itemId: string): string => `/cart/${cartId}/items/${itemId}`,
+    CLEAR_CART: (cartId: string): string => `/cart/${cartId}/clear`,
+    VALIDATE_CART: (cartId: string): string => `/cart/${cartId}/validate`,
+    APPLY_COUPON: (cartId: string): string => `/cart/${cartId}/promo`,
+    REMOVE_COUPON: (cartId: string): string => `/cart/${cartId}/promo`
+  }
+};
 
 // Create axios instance with defaults
 export const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   withCredentials: true, // Important for cookies
   headers: {
     'Content-Type': 'application/json'
@@ -11,59 +49,14 @@ export const axiosInstance = axios.create({
 });
 
 // Authentication API routes
-export const authApi = {
-  // Authentication - Registration
-  register: `/auth/register`,
-  verifyRegistrationOTP: `/auth/register/verify-otp`,
-  resendRegistrationOTP: `/auth/register/resend-otp`,
-  
-  // Authentication - Login
-  login: `/auth/login`,
-  verifyLoginOTP: `/auth/login/verify-otp`, 
-  resendLoginOTP: `/auth/login/resend-otp`,
-  adminLogin: `/auth/admin/login`,
-  
-  // Session management
-  logout: `/auth/logout`,
-  refreshToken: `/auth/refresh-token`,
-  
-  // Email verification
-  verifyEmail: `/auth/verify-email`,
-  resendVerification: `/auth/resend-verification`,
-  
-  // Password management
-  forgotPassword: `/auth/forgot-password`,
-  resetPassword: `/auth/reset-password`,
-  changePassword: `/auth/change-password`,
-  
-  // User profile
-  getProfile: `/auth/profile`,
-  updateProfile: `/auth/profile`,
-  
-  // OAuth
-  googleAuth: `/auth/google`,
-  
-  // Session management
-  getSessions: `/auth/sessions`,
-  revokeSession: (sessionId: string): string => `/auth/sessions/${sessionId}`,
-  revokeAllSessions: `/auth/sessions`,
-  
-  // Vendor registration
-  createVendorProfile: `/auth/vendor/create-profile`,
-  
-  // Customer profile
-  createCustomerProfile: `/auth/customer/create-profile`,
-  
-  // CSRF protection
-  getCsrfToken: `/auth/csrf-token`
-};
+export const authApi = API_ENDPOINTS.AUTH;
 
 // Product API routes for customers
 export const productApi = {
   // Browse and search products
-  getAllProducts: `/products`,
-  searchProducts: `/products/search`,
-  getFeaturedProducts: `/products/featured`,
+  getAllProducts: '/products',
+  searchProducts: '/products/search',
+  getFeaturedProducts: '/products/featured',
   
   // Single product details
   getProduct: (id: string): string => `/products/${id}`,
@@ -99,6 +92,70 @@ export const customerApi = {
   removeFromWishlist: (productId: string): string => `/customer/wishlist/${productId}`
 };
 
+// Cart API routes
+export const cartApi = API_ENDPOINTS.CART;
+
+// Helper functions for working with the cart API
+export const cartUtils = {
+  // Initialize a new cart or get an existing one
+  initializeCart: async (sessionId?: string) => {
+    return api.post(cartApi.INITIALIZE, { sessionId });
+  },
+
+  // Get a cart by ID
+  getCart: async (cartId: string) => {
+    return api.get(cartApi.GET_CART(cartId));
+  },
+
+  // Get the authenticated user's cart
+  getUserCart: async () => {
+    return api.get(cartApi.GET_USER_CART);
+  },
+
+  // Get a guest cart by session ID
+  getGuestCart: async (sessionId: string) => {
+    return api.get(cartApi.GET_GUEST_CART(sessionId));
+  },
+
+  // Add an item to the cart
+  addItemToCart: async (cartId: string, productId: string, quantity: number, variantId?: string) => {
+    return api.post(cartApi.ADD_ITEM(cartId), { productId, quantity, variantId });
+  },
+
+  // Update cart item quantity
+  updateCartItem: async (cartId: string, itemId: string, quantity: number) => {
+    return api.put(cartApi.UPDATE_ITEM(cartId, itemId), { quantity });
+  },
+
+  // Remove an item from the cart
+  removeCartItem: async (cartId: string, itemId: string) => {
+    return api.delete(cartApi.REMOVE_ITEM(cartId, itemId));
+  },
+
+  // Clear all items from the cart
+  clearCart: async (cartId: string) => {
+    return api.post(cartApi.CLEAR_CART(cartId));
+  },
+
+  // Validate cart before checkout
+  validateCart: async (cartId: string) => {
+    return api.get(cartApi.VALIDATE_CART(cartId));
+  },
+
+  // Apply a coupon code to the cart
+  applyCoupon: async (cartId: string, couponCode: string) => {
+    return api.post(cartApi.APPLY_COUPON(cartId), { couponCode });
+  },
+
+  // Remove a coupon from the cart
+  removeCoupon: async (cartId: string) => {
+    return api.delete(cartApi.REMOVE_COUPON(cartId));
+  }
+};
+
+// Export cart utility functions
+
+// Basic API helper functions
 // Basic API helper functions
 export const api = {
     // Get access token from cookies or localStorage
@@ -153,7 +210,7 @@ export const api = {
         
         // We shouldn't use the axios instance directly to avoid interceptor loops
         // Instead, we'll make a direct POST request to the refresh token endpoint
-        const response = await fetch(`${API_URL}${authApi.refreshToken}`, {
+      const response = await fetch(`${API_BASE_URL}${authApi.REFRESH_TOKEN}`, {
           method: 'POST',
           credentials: 'include', // Important for including cookies
           headers: {
@@ -222,7 +279,7 @@ export const api = {
       try {
         // Get the freshest token available - either passed in or from localStorage
         let accessToken = token;
-        if (!accessToken && url !== authApi.refreshToken) {
+      if (!accessToken && url !== authApi.REFRESH_TOKEN) {
           accessToken = localStorage.getItem('accessToken');
           if (accessToken) {
             console.log(`🔐 Using fresh token from localStorage for POST ${url}`);
@@ -365,7 +422,7 @@ export const api = {
       
       try {
         // Make a direct fetch call to avoid interceptor issues
-        const response = await fetch(`${API_URL}${authApi.refreshToken}`, {
+      const response = await fetch(`${API_BASE_URL}${authApi.REFRESH_TOKEN}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -409,177 +466,195 @@ export const api = {
         return false;
       }
     },
+};
+
+// Type-safe API helper for GET requests
+export const apiGet = async <T = any>(endpoint: string): Promise<T> => {
+  const response = await api.get(endpoint);
+  if (response.error) {
+    throw new Error(response.error);
+  }
+  return response as T;
+};
+
+// Type-safe API helper for POST requests
+export const apiPost = async <T = any>(endpoint: string, data: Record<string, any> = {}): Promise<T> => {
+  const response = await api.post(endpoint, data);
+  if (response.error) {
+    throw new Error(response.error);
+  }
+  return response as T;
+};
+
+// Setup API interceptors
+export function setupApiInterceptors() {
+  console.log('🔧 Setting up API interceptors...');
+  
+  // Variable to track if token refresh is in progress
+  let isRefreshing = false;
+  
+  // Queue of requests waiting for token refresh
+  let refreshQueue: Array<(token: string | null) => void> = [];
+  
+  // Helper to process queued requests with new token
+  const processQueue = (newToken: string | null) => {
+    console.log(`🔄 Processing queued requests (${refreshQueue.length}), token:`, !!newToken);
+      refreshQueue.forEach(callback => callback(newToken));
+    refreshQueue = [];
   };
   
-  // Setup API interceptors
-  export function setupApiInterceptors() {
-    console.log('🔧 Setting up API interceptors...');
-    
-    // Variable to track if token refresh is in progress
-    let isRefreshing = false;
-    
-    // Queue of requests waiting for token refresh
-    let refreshQueue: Array<(token: string | null) => void> = [];
-    
-    // Helper to process queued requests with new token
-    const processQueue = (newToken: string | null) => {
-      console.log(`🔄 Processing queued requests (${refreshQueue.length}), token:`, !!newToken);
-        refreshQueue.forEach(callback => callback(newToken));
-      refreshQueue = [];
-    };
-    
-    // Update the request interceptor to check localStorage for tokens
-    axiosInstance.interceptors.request.use(
-      config => {
-        // Always check localStorage first for the freshest token
-        const localToken = localStorage.getItem('accessToken');
-        if (localToken) {
-          console.log('🔐 Request interceptor: Using token from localStorage');
-          config.headers.Authorization = `Bearer ${localToken}`;
-        } else {
-          // Fall back to auth store if needed
-        const token = api.getAccessToken();
-        if (token) {
-            console.log('🔐 Request interceptor: Using token from api.getAccessToken');
-          config.headers.Authorization = `Bearer ${token}`;
-          }
+  // Update the request interceptor to check localStorage for tokens
+  axiosInstance.interceptors.request.use(
+    config => {
+      // Always check localStorage first for the freshest token
+      const localToken = localStorage.getItem('accessToken');
+      if (localToken) {
+        console.log('🔐 Request interceptor: Using token from localStorage');
+        config.headers.Authorization = `Bearer ${localToken}`;
+      } else {
+        // Fall back to auth store if needed
+      const token = api.getAccessToken();
+      if (token) {
+          console.log('🔐 Request interceptor: Using token from api.getAccessToken');
+        config.headers.Authorization = `Bearer ${token}`;
         }
-        return config;
-      },
-      error => Promise.reject(error)
-    );
-    
-    // Response interceptor
-    axiosInstance.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
-        
-        // Handle 401 Unauthorized errors (token expired)
-        if (error.response && error.response.status === 401 && !originalRequest._retry) {
-          // Debug info about the 401 error
-          console.log('🔐 API 401 error intercepted:', originalRequest.url);
-          
-          // Avoid infinite loops
-          if (originalRequest.url.includes('/auth/refresh-token')) {
-            console.log('❌ Refresh token request failed, user needs to log in');
-            
-            // Clear tokens from localStorage
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            
-            // Reset auth state and clear queue
-            const authStore = (await import('../store/useAuthStore')).default;
-            authStore.getState().clearState();
-            processQueue(null);
-            
-            return Promise.reject(error);
-          }
-          
-          // Set retry flag to prevent duplicate refresh attempts
-          originalRequest._retry = true;
-          
-          // If refresh is already in progress, queue this request
-          if (isRefreshing) {
-            console.log('🔄 Token refresh in progress, queueing request...');
-            
-            return new Promise((resolve, reject) => {
-              refreshQueue.push(newToken => {
-                if (newToken) {
-                originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                resolve(axiosInstance(originalRequest));
-                } else {
-                  reject(error);
-                }
-              });
-            });
-          }
-          
-          // Start refresh process
-          isRefreshing = true;
-          console.log('🔄 Token expired, attempting to refresh...');
-          
-          try {
-            // Use direct fetch to avoid interceptor loops
-            const refreshToken = localStorage.getItem('refreshToken');
-            if (!refreshToken) {
-              throw new Error('No refresh token available');
-            }
-            
-            // Make direct fetch call to the refresh endpoint
-            const refreshResponse = await fetch(`${API_URL}/auth/refresh-token`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ refreshToken }),
-              credentials: 'include'
-            });
-            
-            if (!refreshResponse.ok) {
-              throw new Error(`Refresh failed with status: ${refreshResponse.status}`);
-            }
-            
-            const data = await refreshResponse.json();
-            
-            if (data && data.accessToken) {
-              // Save new token to localStorage
-              localStorage.setItem('accessToken', data.accessToken);
-              if (data.refreshToken) {
-                localStorage.setItem('refreshToken', data.refreshToken);
-              }
-              
-              // Update auth store
-              const authStore = (await import('../store/useAuthStore')).default;
-              authStore.getState().setTokenAndUser(data.accessToken, data.user || null);
-              
-              console.log('✅ Token refreshed, updating requests and continuing');
-              
-                // Update original request with new token
-              originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-                
-                // Process any queued requests with the new token
-              processQueue(data.accessToken);
-                
-                // Continue with original request
-              isRefreshing = false;
-                return axiosInstance(originalRequest);
-            } else {
-              throw new Error('Refresh response did not contain access token');
-            }
-          } catch (refreshError) {
-            console.error('❌ Error refreshing token:', refreshError);
-            
-            // Clear tokens from localStorage
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            
-            // Reset auth state and clear queue
-            const authStore = (await import('../store/useAuthStore')).default;
-            authStore.getState().clearState();
-            processQueue(null);
-            isRefreshing = false;
-            
-            return Promise.reject(error);
-          }
-        }
-        
-        // For other errors, log and reject
-        if (error.response) {
-          // Log API errors for debugging
-          console.error(`API Error: ${error.response.status}`, error.response.data);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error('API Error: No response received', error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error('API Error:', error.message);
-        }
-        
-        return Promise.reject(error);
       }
-    );
-  }
+      return config;
+    },
+    error => Promise.reject(error)
+  );
   
-  export default api;
+  // Response interceptor
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      
+      // Handle 401 Unauthorized errors (token expired)
+      if (error.response && error.response.status === 401 && !originalRequest._retry) {
+        // Debug info about the 401 error
+        console.log('🔐 API 401 error intercepted:', originalRequest.url);
+        
+        // Avoid infinite loops
+        if (originalRequest.url.includes('/auth/refresh-token')) {
+          console.log('❌ Refresh token request failed, user needs to log in');
+          
+          // Clear tokens from localStorage
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          
+          // Reset auth state and clear queue
+          const authStore = (await import('../store/useAuthStore')).default;
+          authStore.getState().clearState();
+          processQueue(null);
+          
+          return Promise.reject(error);
+        }
+        
+        // Set retry flag to prevent duplicate refresh attempts
+        originalRequest._retry = true;
+        
+        // If refresh is already in progress, queue this request
+        if (isRefreshing) {
+          console.log('🔄 Token refresh in progress, queueing request...');
+          
+          return new Promise((resolve, reject) => {
+            refreshQueue.push(newToken => {
+              if (newToken) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(axiosInstance(originalRequest));
+              } else {
+                reject(error);
+              }
+            });
+          });
+        }
+        
+        // Start refresh process
+        isRefreshing = true;
+        console.log('🔄 Token expired, attempting to refresh...');
+        
+        try {
+          // Use direct fetch to avoid interceptor loops
+          const refreshToken = localStorage.getItem('refreshToken');
+          if (!refreshToken) {
+            throw new Error('No refresh token available');
+          }
+          
+          // Make direct fetch call to the refresh endpoint
+          const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ refreshToken }),
+            credentials: 'include'
+          });
+          
+          if (!refreshResponse.ok) {
+            throw new Error(`Refresh failed with status: ${refreshResponse.status}`);
+          }
+          
+          const data = await refreshResponse.json();
+          
+          if (data && data.accessToken) {
+            // Save new token to localStorage
+            localStorage.setItem('accessToken', data.accessToken);
+            if (data.refreshToken) {
+              localStorage.setItem('refreshToken', data.refreshToken);
+            }
+            
+            // Update auth store
+            const authStore = (await import('../store/useAuthStore')).default;
+            authStore.getState().setTokenAndUser(data.accessToken, data.user || null);
+            
+            console.log('✅ Token refreshed, updating requests and continuing');
+            
+              // Update original request with new token
+            originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+            
+              // Process any queued requests with the new token
+            processQueue(data.accessToken);
+            
+              // Continue with original request
+            isRefreshing = false;
+              return axiosInstance(originalRequest);
+          } else {
+            throw new Error('Refresh response did not contain access token');
+          }
+        } catch (refreshError) {
+          console.error('❌ Error refreshing token:', refreshError);
+          
+          // Clear tokens from localStorage
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          
+          // Reset auth state and clear queue
+          const authStore = (await import('../store/useAuthStore')).default;
+          authStore.getState().clearState();
+          processQueue(null);
+          isRefreshing = false;
+          
+          return Promise.reject(error);
+        }
+      }
+      
+      // For other errors, log and reject
+      if (error.response) {
+        // Log API errors for debugging
+        console.error(`API Error: ${error.response.status}`, error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('API Error: No response received', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('API Error:', error.message);
+      }
+      
+      return Promise.reject(error);
+    }
+  );
+}
+
+export default api;
   

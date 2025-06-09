@@ -1,35 +1,34 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { axiosInstance, api, authApi } from '../utils/api';
+import { api, authApi, API_BASE_URL, API_ENDPOINTS } from '../utils/api';
 
 // User type definition
 export interface User {
   id: string;
   email: string;
-  name?: string;
-  role: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
+  name: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  role: "CUSTOMER" | "VENDOR" | "ADMIN";
   isVerified: boolean;
-  profileImageUrl?: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
+  profileImageUrl?: string | null;
+  phone?: string | null;
   preferredLanguage?: string;
   preferredCurrency?: string;
-  vendor?: {
-    id: string;
-    storeName: string;
-    slug: string;
-    logo?: string;
-    banner?: string;
-    description?: string;
-    isActive: boolean;
-    verificationStatus: string;
-  };
-  admin?: {
-    id: string;
-    permissions: string[];
-    isSuper: boolean;
-  };
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+  dateOfBirth?: string;
+}
+
+// Customer profile data for creation/update
+export interface CustomerProfileData {
+  firstName: string;
+  lastName: string;
+  name?: string;
+  phone?: string;
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+  dateOfBirth?: string;
+  preferredLanguage?: string;
+  preferredCurrency?: string;
 }
 
 // Session type definition
@@ -50,735 +49,324 @@ export interface RegistrationData {
   expiresAt: number; // Calculated timestamp when OTP will expire
 }
 
-// Login data type
+// Login data returned when OTP is required
 export interface LoginData {
   userId: string;
   email: string;
   requireOTP: boolean;
   expiresIn: number;
   expiresAt: number; // Calculated timestamp when OTP will expire
-  requiresTwoFactor?: boolean; // For admin login
 }
 
 // Authentication state interface
 interface AuthState {
-  // Authentication state
+  accessToken: string | null;
+  user: User | null;
+  error: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: User | null;
-  accessToken: string | null;
-  error: string | null;
-  
-  // Registration state
-  registrationData: RegistrationData | null;
-  
-  // Login state
-  loginData: LoginData | null;
-  
-  // Session management
-  sessions: Session[];
-  
-  // Actions for authentication
-  register: (email: string, password: string, name?: string, phone?: string) => Promise<RegistrationData | null>;
-  verifyRegistration: (registrationId: string, email: string, otp: string) => Promise<User | null>;
-  resendRegistrationOTP: (registrationId: string, email: string) => Promise<boolean>;
-  
-  login: (email: string, password: string) => Promise<LoginData | null>;
-  verifyLogin: (email: string, otp: string, rememberMe?: boolean) => Promise<User | null>;
-  resendLoginOTP: (email: string) => Promise<boolean>;
-  
-  logout: () => Promise<void>;
-  refreshToken: () => Promise<boolean>;
-  
-  // Profile actions
-  getProfile: () => Promise<User | null>;
-  updateProfile: (profileData: Partial<User>) => Promise<User | null>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
-  
-  // Email verification
-  verifyEmail: (userId: string, verificationCode: string) => Promise<boolean>;
-  resendVerification: (email: string) => Promise<boolean>;
-  
-  // Password recovery
-  forgotPassword: (email: string) => Promise<boolean>;
-  resetPassword: (userId: string, token: string, newPassword: string) => Promise<boolean>;
-  
-  // Session management
-  loadSessions: () => Promise<Session[]>;
-  revokeSession: (sessionId: string) => Promise<boolean>;
-  revokeAllSessions: () => Promise<boolean>;
-  
-  // Social login
-  loginWithGoogle: (idToken: string) => Promise<User | null>;
-  
-  // State management utilities
-  setTokenAndUser: (token: string, user: User | null) => void;
+  loginData: LoginData | null; // Added to store login data for OTP verification
+
+  // Set error message
   setError: (error: string | null) => void;
+  
+  // Set user and token
+  setTokenAndUser: (token: string, user: User | null) => void;
+  
+  // Clear auth state
   clearState: () => void;
   
-  // Add this new property
-  createCustomerProfile: (profileData: {
-    firstName: string;
-    lastName: string;
-    name?: string;
-    phone?: string;
-    gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
-    dateOfBirth?: string;
-    biography?: string;
-    timezone?: string;
-    preferredLanguage?: string;
-    preferredCurrency?: string;
-    marketingConsent?: boolean;
-    notificationPreferences?: Record<string, boolean>;
-    communicationChannels?: string[];
-  }) => Promise<User | null>;
+  // Initialize auth from localStorage/cookies
+  initializeAuth: () => Promise<boolean>;
+  
+  // Refresh token
+  refreshToken: () => Promise<boolean>;
+  
+  // Load user profile
+  loadUserProfile: () => Promise<boolean>;
+
+  // Login methods
+  login: (email: string, password: string) => Promise<LoginData | null>;
+  verifyLogin: (email: string, otp: string, rememberMe: boolean) => Promise<User | null>;
+  resendLoginOTP: (email: string) => Promise<LoginData | null>;
+  
+  // New methods for profile management
+  updateProfile: (profileData: any) => Promise<boolean>;
+  createCustomerProfile: (profileData: CustomerProfileData) => Promise<boolean>;
+  logout: () => void; // Alias for clearState
 }
 
 // Create the auth store with persistence
 const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      // Initial state
+      accessToken: null,
+      user: null,
+      error: null,
       isAuthenticated: false,
       isLoading: false,
-      user: null,
-      accessToken: null,
-      error: null,
-      registrationData: null,
       loginData: null,
-      sessions: [],
+
+      setError: (error: string | null) => {
+        set({ error });
+      },
       
-      // REGISTRATION
-      register: async (email, password, name, phone) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.register, {
-            email,
-            password,
-            name,
-            phone,
-            role: 'CUSTOMER', // Default role for regular users
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          // Calculate OTP expiration timestamp
-          const expiresAt = Date.now() + (response.expiresIn * 1000);
-          
-          const registrationData = {
-            registrationId: response.registrationId,
-            email,
-            requireOTP: response.requireOTP,
-            expiresIn: response.expiresIn,
-            expiresAt
-          };
-          
+      setTokenAndUser: (token: string, user: User | null) => {
           set({
-            registrationData,
-            isLoading: false
-          });
-          
-          return registrationData;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Registration failed';
-          set({ error: errorMsg, isLoading: false });
-          return null;
+          accessToken: token,
+          user: user || get().user,
+          isAuthenticated: !!token,
+          error: null
+        });
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', token);
+          if (user) localStorage.setItem('userData', JSON.stringify(user));
         }
       },
       
-      verifyRegistration: async (registrationId, email, otp) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.verifyRegistrationOTP, {
-            registrationId,
-            email,
-            otp
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          // Save token to localStorage for API interceptors
-          if (response.accessToken) {
-            localStorage.setItem('accessToken', response.accessToken);
-          }
-          
-          set({
-            user: response.user,
-            accessToken: response.accessToken,
-            isAuthenticated: true,
-            isLoading: false,
-            registrationData: null // Clear registration data
-          });
-          
-          return response.user;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'OTP verification failed';
-          set({ error: errorMsg, isLoading: false });
-          return null;
+      clearState: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('userData');
         }
+        set({
+          accessToken: null,
+          user: null,
+          isAuthenticated: false,
+          error: null,
+          loginData: null
+        });
       },
       
-      resendRegistrationOTP: async (registrationId, email) => {
-        set({ isLoading: true, error: null });
-        
+      initializeAuth: async () => {
+        if (typeof window === 'undefined') return false;
+        set({ isLoading: true });
         try {
-          const response = await api.post(authApi.resendRegistrationOTP, {
-            registrationId,
-            email
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          // Update expiration time
-          const registrationData = get().registrationData;
-          if (registrationData) {
+          const storedAccessToken = localStorage.getItem('accessToken');
+          const storedRefreshToken = localStorage.getItem('refreshToken');
+          if (storedAccessToken) {
+            set({ accessToken: storedAccessToken });
+            const userDataString = localStorage.getItem('userData');
+            const userData = userDataString ? JSON.parse(userDataString) : null;
             set({
-              registrationData: {
-                ...registrationData,
-                expiresIn: response.expiresIn,
-                expiresAt: Date.now() + (response.expiresIn * 1000)
-              }
-            });
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to resend OTP';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      // LOGIN
-      login: async (email, password) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.login, {
-            email,
-            password
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          // Handle direct login (if no OTP required)
-          if (response.accessToken) {
-            // Save token to localStorage for API interceptors
-            localStorage.setItem('accessToken', response.accessToken);
-            
-            set({
-              user: response.user,
-              accessToken: response.accessToken,
+              user: userData,
               isAuthenticated: true,
               isLoading: false
             });
-            
-            return null; // No OTP required, return null for loginData
+            if (!userData) {
+              try { await get().loadUserProfile(); } catch {}
+            }
+            return true;
           }
-          
-          // Handle OTP required
-          const expiresAt = Date.now() + (response.expiresIn * 1000);
-          
-          const loginData = {
-            userId: response.userId,
-            email,
-            requireOTP: response.requireOTP,
-            expiresIn: response.expiresIn,
-            expiresAt
-          };
-          
+          if (storedRefreshToken) {
+            const refreshed = await get().refreshToken();
+            set({ isLoading: false });
+            return refreshed;
+          }
           set({
-            loginData,
-            isLoading: false
-          });
-          
-          return loginData;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Login failed';
-          set({ error: errorMsg, isLoading: false });
-          return null;
-        }
-      },
-      
-      verifyLogin: async (email, otp, rememberMe = false) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.verifyLoginOTP, {
-            email,
-            otp,
-            rememberMe
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          // Save token to localStorage for API interceptors
-          if (response.accessToken) {
-            localStorage.setItem('accessToken', response.accessToken);
-          }
-          
-          set({
-            user: response.user,
-            accessToken: response.accessToken,
-            isAuthenticated: true,
             isLoading: false,
-            loginData: null // Clear login data
+            isAuthenticated: false,
+            user: null,
+            accessToken: null,
+            error: null
           });
-          
-          return response.user;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'OTP verification failed';
-          set({ error: errorMsg, isLoading: false });
-          return null;
-        }
-      },
-      
-      resendLoginOTP: async (email) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.resendLoginOTP, { email });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          // Update expiration time
-          const loginData = get().loginData;
-          if (loginData) {
-            set({
-              loginData: {
-                ...loginData,
-                expiresIn: response.expiresIn,
-                expiresAt: Date.now() + (response.expiresIn * 1000)
-              }
-            });
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to resend OTP';
-          set({ error: errorMsg, isLoading: false });
           return false;
-        }
-      },
-      
-      // LOGOUT
-      logout: async () => {
-        set({ isLoading: true });
-        
-        try {
-          await api.post(authApi.logout);
-          
-          // Remove tokens from localStorage
-          localStorage.removeItem('accessToken');
-          
-          // Clear auth state
-          set({
-            isAuthenticated: false,
-            user: null,
-            accessToken: null,
-            isLoading: false
-          });
         } catch (error) {
-          console.error('Logout error:', error);
-          
-          // Clear state anyway to prevent the user from being stuck in a logged-in state
-          localStorage.removeItem('accessToken');
-          
-          set({
-            isAuthenticated: false,
-            user: null,
-            accessToken: null,
-            isLoading: false
-          });
+          set({ isLoading: false, isAuthenticated: false, error: 'Failed to authenticate user' });
+          return false;
         }
       },
       
       refreshToken: async () => {
+        if (typeof window === 'undefined') return false;
+        set({ isLoading: true });
         try {
-          const response = await api.post(authApi.refreshToken);
-          
-          if (response.error || !response.accessToken) {
-            set({ isAuthenticated: false, user: null, accessToken: null });
-            return false;
+          const refreshed = await api.refreshAccessToken();
+          if (refreshed) {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+              set({ accessToken: token, isAuthenticated: true, isLoading: false });
+              try { await get().loadUserProfile(); } catch {}
+              return true;
+            }
           }
-          
-          // Save token to localStorage for API interceptors
-          localStorage.setItem('accessToken', response.accessToken);
-          
-          set({
-            accessToken: response.accessToken,
-            isAuthenticated: true
-          });
-          
-          return true;
+          set({ isLoading: false, isAuthenticated: false });
+          return false;
         } catch (error) {
-          console.error('Token refresh error:', error);
-          set({ isAuthenticated: false, user: null, accessToken: null });
+          set({ isLoading: false, isAuthenticated: false, error: 'Failed to refresh authentication' });
           return false;
         }
       },
       
-      // PROFILE MANAGEMENT
-      getProfile: async () => {
-        set({ isLoading: true, error: null });
-        
+      loadUserProfile: async () => {
+        if (typeof window === 'undefined') return false;
         try {
-          const response = await api.get(authApi.getProfile);
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
+          const token = get().accessToken || api.getAccessToken();
+          if (!token) return false;
+          const response = await api.get(authApi.PROFILE, token);
+          if (response && response.user) {
+            set({ user: response.user, isAuthenticated: true });
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('userData', JSON.stringify(response.user));
+            }
+            return true;
           }
-          
-          set({
-            user: response.user,
-            isLoading: false
-          });
-          
-          return response.user;
+          return false;
         } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to fetch profile';
-          set({ error: errorMsg, isLoading: false });
-          return null;
-        }
-      },
-      
-      updateProfile: async (profileData) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.put(authApi.updateProfile, profileData);
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          const updatedUser = { ...get().user, ...response.user };
-          
-          set({
-            user: updatedUser,
-            isLoading: false
-          });
-          
-          return updatedUser;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to update profile';
-          set({ error: errorMsg, isLoading: false });
-          return null;
-        }
-      },
-      
-      changePassword: async (currentPassword, newPassword) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.changePassword, {
-            currentPassword,
-            newPassword
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Password change failed';
-          set({ error: errorMsg, isLoading: false });
           return false;
         }
       },
       
-      // EMAIL VERIFICATION
-      verifyEmail: async (userId, verificationCode) => {
+      // Login with email and password
+      login: async (email: string, password: string): Promise<LoginData | null> => {
         set({ isLoading: true, error: null });
-        
         try {
-          const response = await api.post(authApi.verifyEmail, {
-            userId,
-            code: verificationCode
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
+          const response = await api.post(authApi.LOGIN, { email, password });
+          if (response.requireOTP) {
+            const loginData: LoginData = {
+              userId: response.userId,
+              email,
+              requireOTP: true,
+              expiresIn: response.expiresIn || 300,
+              expiresAt: Date.now() + ((response.expiresIn || 300) * 1000)
+            };
+            set({ loginData, isLoading: false });
+            return loginData;
           }
-          
-          // If the current user is the one being verified, update their status
-          const currentUser = get().user;
-          if (currentUser && currentUser.id === userId) {
-            set({
-              user: {
-                ...currentUser,
-                isVerified: true
-              }
-            });
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Email verification failed';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      resendVerification: async (email) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.resendVerification, { email });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to resend verification';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      // PASSWORD RECOVERY
-      forgotPassword: async (email) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.forgotPassword, { email });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Password reset request failed';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      resetPassword: async (userId, token, newPassword) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.resetPassword, {
-            userId,
-            token,
-            password: newPassword
-          });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Password reset failed';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      // SESSION MANAGEMENT
-      loadSessions: async () => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.get(authApi.getSessions);
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return [];
-          }
-          
-          set({
-            sessions: response.sessions || [],
-            isLoading: false
-          });
-          
-          return response.sessions || [];
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to load sessions';
-          set({ error: errorMsg, isLoading: false });
-          return [];
-        }
-      },
-      
-      revokeSession: async (sessionId) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.delete(authApi.revokeSession(sessionId));
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          // Remove the revoked session from the list
-          set({ 
-            sessions: get().sessions.filter(session => session.id !== sessionId),
-            isLoading: false
-          });
-          
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to revoke session';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      revokeAllSessions: async () => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.delete(authApi.revokeAllSessions);
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return false;
-          }
-          
-          // Reload sessions to get the current one
-          await get().loadSessions();
-          
-          set({ isLoading: false });
-          return true;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to revoke all sessions';
-          set({ error: errorMsg, isLoading: false });
-          return false;
-        }
-      },
-      
-      // SOCIAL LOGIN
-      loginWithGoogle: async (idToken) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const response = await api.post(authApi.googleAuth, { idToken });
-          
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
-          }
-          
-          // Save token to localStorage for API interceptors
-          if (response.accessToken) {
+          if (response.accessToken && response.user) {
             localStorage.setItem('accessToken', response.accessToken);
+            if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userData', JSON.stringify(response.user));
+            set({ accessToken: response.accessToken, user: response.user, isAuthenticated: true, isLoading: false });
+            return null;
           }
-          
-          set({
-            user: response.user,
-            accessToken: response.accessToken,
-            isAuthenticated: true,
-            isLoading: false
-          });
-          
-          return response.user;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Google login failed';
-          set({ error: errorMsg, isLoading: false });
+          set({ isLoading: false, error: 'Login response missing token or user data' });
+          return null;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred during login' });
           return null;
         }
       },
       
-      // UTILS
-      setTokenAndUser: (token, user) => {
-        set({
-          accessToken: token,
-          user,
-          isAuthenticated: !!token
-        });
-      },
-      
-      setError: (error) => {
-        set({ error });
-      },
-      
-      clearState: () => {
-        localStorage.removeItem('accessToken');
-        
-        set({
-          isAuthenticated: false,
-          user: null,
-          accessToken: null,
-          error: null,
-          registrationData: null,
-          loginData: null,
-          sessions: []
-        });
-      },
-      
-      // Add the new method
-      createCustomerProfile: async (profileData) => {
+      // Verify OTP for login
+      verifyLogin: async (email: string, otp: string, rememberMe = false) => {
         set({ isLoading: true, error: null });
         
         try {
-          const response = await api.post(authApi.createCustomerProfile, profileData);
+          const response = await api.post(authApi.VERIFY_LOGIN_OTP, { email, otp, rememberMe });
           
-          if (response.error) {
-            set({ error: response.error, isLoading: false });
-            return null;
+          if (response.accessToken && response.user) {
+            localStorage.setItem('accessToken', response.accessToken);
+            if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userData', JSON.stringify(response.user));
+            set({ accessToken: response.accessToken, user: response.user, isAuthenticated: true, loginData: null, isLoading: false });
+            return response.user;
           }
           
-          // Update user data in state with the returned profile
-          const user = { ...get().user, ...response.user };
-          
-          set({
-            user,
-            isLoading: false
-          });
-          
-          return user;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Failed to create customer profile';
-          set({ error: errorMsg, isLoading: false });
+          set({ isLoading: false, error: 'Verification response missing token or user data' });
+          return null;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred during verification' });
           return null;
         }
       },
+      
+      // Resend OTP
+      resendLoginOTP: async (email: string) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const response = await api.post(authApi.RESEND_LOGIN_OTP, { email });
+          
+          if (response.expiresIn) {
+            const loginData: LoginData = {
+              userId: get().loginData?.userId || '',
+              email,
+              requireOTP: true,
+              expiresIn: response.expiresIn || 300,
+              expiresAt: Date.now() + ((response.expiresIn || 300) * 1000)
+            };
+            
+            set({ loginData, isLoading: false });
+            return loginData;
+          }
+          
+          set({ isLoading: false, error: 'Failed to resend OTP' });
+          return null;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred while resending OTP' });
+          return null;
+        }
+      },
+      
+      // Update profile
+      updateProfile: async (profileData: any) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const token = get().accessToken;
+          if (!token) {
+            set({ isLoading: false, error: 'No authentication token available' });
+            return false;
+          }
+          
+          const response = await api.put(authApi.UPDATE_PROFILE || '/api/users/profile', profileData, token);
+          
+          if (response && response.user) {
+            set({ user: response.user, isLoading: false });
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('userData', JSON.stringify(response.user));
+            }
+            return true;
+          }
+          
+          set({ isLoading: false, error: 'Failed to update profile' });
+          return false;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred while updating profile' });
+          return false;
+        }
+      },
+      
+      // Create customer profile
+      createCustomerProfile: async (profileData: CustomerProfileData) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const token = get().accessToken;
+          if (!token) {
+            set({ isLoading: false, error: 'No authentication token available' });
+            return false;
+          }
+          
+          const response = await api.post(authApi.CREATE_PROFILE || '/api/users/customer-profile', profileData, token);
+          
+          if (response && response.user) {
+            set({ user: response.user, isLoading: false });
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('userData', JSON.stringify(response.user));
+            }
+            return true;
+          }
+          
+          set({ isLoading: false, error: 'Failed to create customer profile' });
+          return false;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred while creating customer profile' });
+          return false;
+        }
+      },
+      
+      // Logout (alias for clearState)
+      logout: function() {
+        return this.clearState();
+      }
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? window.localStorage : { getItem: () => null, setItem: () => {}, removeItem: () => {} })),
       partialize: (state) => ({
-        // Only persist these fields to storage
         isAuthenticated: state.isAuthenticated,
         user: state.user,
         accessToken: state.accessToken

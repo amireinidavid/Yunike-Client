@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import api from '@/utils/api';
+import { api, productApi } from '@/utils/api';
 
 // Define types based on the schema
 export interface ProductImage {
@@ -136,18 +136,6 @@ interface ProductState {
   reset: () => void;
 }
 
-// Product API endpoints
-const productApi = {
-  getProducts: '/products',
-  getProduct: (id: string) => `/products/${id}`,
-  getProductBySlug: (slug: string) => `/products/slug/${slug}`,
-  getFeatured: '/products/featured',
-  getRelated: (productId: string) => `/products/${productId}/related`,
-  searchProducts: '/products/search',
-  getVendorProducts: (vendorId: string) => `/products/vendor/${vendorId}`,
-  getVendorProductsBySlug: (slug: string) => `/products/vendor/slug/${slug}`,
-};
-
 // Create product store
 const useProductStore = create<ProductState>((set, get) => ({
   // Initial state
@@ -203,7 +191,7 @@ const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoadingProduct: true });
     
     try {
-      const response = await api.get(`${productApi.getRelated(productId)}?limit=${limit}`);
+      const response = await api.get(`${productApi.getRelatedProducts(productId)}?limit=${limit}`);
       
       if (response.success && response.data) {
         set({ relatedProducts: response.data, isLoadingProduct: false });
@@ -235,7 +223,7 @@ const useProductStore = create<ProductState>((set, get) => ({
       if (filters.page) queryParams.append('page', filters.page.toString());
       if (filters.limit) queryParams.append('limit', filters.limit.toString());
       
-      const response = await api.get(`${productApi.getProducts}?${queryParams.toString()}`);
+      const response = await api.get(`${productApi.getAllProducts}?${queryParams.toString()}`);
       
       if (response.success) {
         const result = {
@@ -271,7 +259,7 @@ const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoadingProducts: true, productsError: null });
     
     try {
-      const response = await api.get(`${productApi.getFeatured}?limit=${limit}`);
+      const response = await api.get(`${productApi.getFeaturedProducts}?limit=${limit}`);
       
       if (response.success && response.data) {
         set({ 

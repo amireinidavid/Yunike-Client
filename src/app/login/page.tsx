@@ -23,6 +23,10 @@ import { toast } from "sonner";
 import useAuthStore from "@/store/useAuthStore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
+import { API_BASE_URL, API_ENDPOINTS } from "@/utils/api";
+import { debugApiUrl } from "@/utils/apiDebug";
+import { useAuth } from "@/components/AuthProvider";
+import { isJwtExpired } from "@/utils/jwt";
 
 // Form validation schema with explicit types
 const loginSchema = z.object({
@@ -93,6 +97,15 @@ export default function LoginPage() {
     setError(null); // Clear any previous errors
     
     try {
+      // Add debug info
+      const debugInfo = debugApiUrl();
+      console.log('🔍 Debug API URLs:', debugInfo);
+      
+      console.log(`🔐 Attempting login for: ${values.email}`);
+      console.log(`🌐 API_BASE_URL: ${API_BASE_URL}`);
+      console.log(`🔗 Login endpoint: ${API_ENDPOINTS.AUTH.LOGIN}`);
+      console.log(`🔗 Full URL: ${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`);
+      
       const result = await login(values.email, values.password);
       
       if (result) {
@@ -127,8 +140,12 @@ export default function LoginPage() {
         // Redirect to home page
         router.push("/");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login error:", err);
+      setError(err.message || "Failed to log in. Please check your credentials and try again.");
+      toast.error("Login failed", {
+        description: err.message || "Please check your credentials and try again."
+      });
     } finally {
       setIsLoggingIn(false);
     }
@@ -439,23 +456,15 @@ export default function LoginPage() {
             </AnimatePresence>
           </CardContent>
 
-          <CardFooter className="px-8 py-6 border-t border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="w-full text-center"
-            >
-              <p className="text-base text-gray-600">
-                Don't have an account?{" "}
-                <Link
-                  href="/register"
-                  className="font-bold text-emerald-600 hover:text-emerald-700 hover:underline transition"
-                >
-                  Register here
-                </Link>
-              </p>
-            </motion.div>
+          <CardFooter className="bg-gray-50 px-8 py-4 flex flex-col">
+            <div className="text-sm text-center text-muted-foreground">
+              Don't have an account?{" "}
+              <Link href="/register" className="text-emerald-600 hover:underline">
+                Sign up
+              </Link>
+            </div>
+            
+            <DevTools />
           </CardFooter>
         </Card>
       </motion.div>
@@ -466,6 +475,75 @@ export default function LoginPage() {
         <div className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-emerald-200/30 blur-3xl"></div>
         <div className="absolute top-[40%] right-[25%] w-40 h-40 rounded-full bg-teal-200/20 blur-2xl"></div>
       </div>
+
+      {/* Debug tools */}
+      <DevTools />
     </div>
   );
+}
+
+// This is a debugging component that can be used to test token refresh
+function TokenDebugger() {
+  const { refreshTokenManually } = useAuth();
+  
+  const checkTokenStatus = () => {
+    // Check localStorage tokens
+    const localStorageToken = localStorage.getItem('accessToken');
+    const refreshTokenValue = localStorage.getItem('refreshToken');
+    
+    // Check cookie tokens (non-httpOnly cookies can be read by JS)
+    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+      const [key, value] = cookie.trim().split('=');
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>);
+    
+    console.log('🔍 Token Status:');
+    console.log('  localStorage accessToken:', localStorageToken ? '✅ Present' : '❌ Missing');
+    console.log('  localStorage refreshToken:', refreshTokenValue ? '✅ Present' : '❌ Missing');
+    console.log('  cookie accessToken:', cookies.accessToken ? '✅ Present' : '❌ Missing');
+    console.log('  JWT expired:', localStorageToken ? (isJwtExpired(localStorageToken) ? '⚠️ Yes' : '✅ No') : '❌ No token');
+  };
+  
+  const testTokenRefresh = async () => {
+    console.log('🔄 Testing manual token refresh...');
+    const result = await refreshTokenManually();
+    console.log('🔄 Refresh result:', result ? '✅ Success' : '❌ Failed');
+    checkTokenStatus();
+  };
+  
+  const simulateExpiredToken = () => {
+    // This doesn't actually delete the token, just replaces it with an expired one
+    const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
+    localStorage.setItem('accessToken', expiredToken);
+    console.log('⚠️ Replaced token with expired one');
+    checkTokenStatus();
+  };
+  
+  return (
+    <div className="mt-8 p-4 border border-dashed border-primary/50 rounded-lg">
+      <h3 className="text-sm font-semibold mb-3">Token Debug Panel (Dev Only)</h3>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" onClick={checkTokenStatus}>
+          Check Token Status
+        </Button>
+        <Button size="sm" variant="outline" onClick={testTokenRefresh}>
+          Test Token Refresh
+        </Button>
+        <Button size="sm" variant="outline" onClick={simulateExpiredToken}>
+          Simulate Expired Token
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Make sure this is visible in development environment only
+function DevTools() {
+  // Only show in development
+  if (process.env.NODE_ENV !== 'development') {
+    return null;
+  }
+  
+  return <TokenDebugger />;
 }

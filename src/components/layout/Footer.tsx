@@ -27,7 +27,7 @@ const Footer = () => {
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                className="p-2 rounded-full bg-muted hover:bg-accent/10 hover:text-accent transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="h-6 w-6" />
@@ -36,7 +36,7 @@ const Footer = () => {
                 href="https://twitter.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                className="p-2 rounded-full bg-muted hover:bg-accent/10 hover:text-accent transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
@@ -45,7 +45,7 @@ const Footer = () => {
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                className="p-2 rounded-full bg-muted hover:bg-accent/10 hover:text-accent transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
@@ -54,7 +54,7 @@ const Footer = () => {
                 href="https://linkedin.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                className="p-2 rounded-full bg-muted hover:bg-accent/10 hover:text-accent transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
@@ -67,31 +67,31 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/shop" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/shop" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Shop All</span>
                 </Link>
               </li>
               <li>
-                <Link href="/deals" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/deals" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Deals & Promotions</span>
                 </Link>
               </li>
               <li>
-                <Link href="/become-a-seller" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/become-a-seller" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Become a Seller</span>
                 </Link>
               </li>
               <li>
-                <Link href="/shipping-info" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/shipping-info" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Shipping Information</span>
                 </Link>
               </li>
               <li>
-                <Link href="/returns" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/returns" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Returns & Exchanges</span>
                 </Link>
@@ -104,31 +104,31 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/category/clothing" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/category/clothing" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Clothing</span>
                 </Link>
               </li>
               <li>
-                <Link href="/category/electronics" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/category/electronics" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Electronics</span>
                 </Link>
               </li>
               <li>
-                <Link href="/category/home" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/category/home" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Home & Living</span>
                 </Link>
               </li>
               <li>
-                <Link href="/category/beauty" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/category/beauty" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Beauty & Health</span>
                 </Link>
               </li>
               <li>
-                <Link href="/category/jewelry" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/category/jewelry" className="flex items-center text-muted-foreground hover:text-accent transition-colors">
                   <ChevronRight className="h-4 w-4 mr-2" />
                   <span>Jewelry & Accessories</span>
                 </Link>
@@ -141,20 +141,20 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 mr-3 text-primary mt-0.5" />
+                <MapPin className="h-5 w-5 mr-3 text-accent mt-0.5" />
                 <span className="text-muted-foreground">
                   123 Commerce Street, Shopville, SV 12345
                 </span>
               </li>
               <li className="flex items-center">
-                <Phone className="h-5 w-5 mr-3 text-primary" />
-                <a href="tel:+1234567890" className="text-muted-foreground hover:text-primary transition-colors">
+                <Phone className="h-5 w-5 mr-3 text-accent" />
+                <a href="tel:+1234567890" className="text-muted-foreground hover:text-accent transition-colors">
                   (123) 456-7890
                 </a>
               </li>
               <li className="flex items-center">
-                <Mail className="h-5 w-5 mr-3 text-primary" />
-                <a href="mailto:info@yunike.com" className="text-muted-foreground hover:text-primary transition-colors">
+                <Mail className="h-5 w-5 mr-3 text-accent" />
+                <a href="mailto:info@yunike.com" className="text-muted-foreground hover:text-accent transition-colors">
                   info@yunike.com
                 </a>
               </li>
@@ -167,9 +167,9 @@ const Footer = () => {
                 <input 
                   type="email" 
                   placeholder="Your email" 
-                  className="flex-1 py-2 px-4 rounded-l-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="flex-1 py-2 px-4 rounded-l-lg border border-input focus:outline-none focus:ring-2 focus:ring-ring"
                 />
-                <button className="bg-primary text-primary-foreground px-4 py-2 rounded-r-lg hover:bg-primary/90 transition-colors">
+                <button className="bg-accent text-accent-foreground px-4 py-2 rounded-r-lg hover:bg-accent/90 transition-colors">
                   Join
                 </button>
               </div>
@@ -186,16 +186,16 @@ const Footer = () => {
               © {currentYear} Yunike. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-accent transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-accent transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/sitemap" className="text-sm text-muted-foreground hover:text-accent transition-colors">
                 Sitemap
               </Link>
-              <Link href="/accessibility" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/accessibility" className="text-sm text-muted-foreground hover:text-accent transition-colors">
                 Accessibility
               </Link>
             </div>
