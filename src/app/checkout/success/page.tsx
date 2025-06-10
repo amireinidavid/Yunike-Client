@@ -51,9 +51,9 @@ export default function CheckoutSuccessPage() {
     return (
       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 rounded-full bg-slate-200 mb-4"></div>
-          <div className="h-8 w-64 bg-slate-200 rounded mb-4"></div>
-          <div className="h-4 w-32 bg-slate-200 rounded"></div>
+          <div className="w-16 h-16 rounded-full bg-gray-100 mb-4"></div>
+          <div className="h-8 w-64 bg-gray-100 rounded mb-4"></div>
+          <div className="h-4 w-32 bg-gray-100 rounded"></div>
         </div>
       </div>
     );
@@ -71,21 +71,21 @@ export default function CheckoutSuccessPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="py-6">
-            <p className="text-slate-600 mb-4">
+            <p className="text-black/70 mb-4">
               There was an issue confirming your payment details. This could be temporary or may require additional action.
             </p>
-            <p className="mb-6 text-slate-700 font-medium">
+            <p className="mb-6 text-black font-medium">
               Error details: {error}
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-black/60">
               If you believe your payment was successful, please contact our customer support team with any order reference number you received.
             </p>
           </CardContent>
-          <CardFooter className="bg-slate-50 border-t flex justify-between">
-            <Button variant="outline" asChild>
+          <CardFooter className="bg-gray-50 border-t border-gray-100 flex justify-between">
+            <Button variant="outline" asChild className="border-gray-200 text-black hover:bg-black/5">
               <Link href="/checkout">Return to Checkout</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="bg-black text-white hover:bg-black/90">
               <Link href="/contact">Contact Support</Link>
             </Button>
           </CardFooter>
@@ -101,37 +101,37 @@ export default function CheckoutSuccessPage() {
           <div className="mx-auto rounded-full bg-green-100 p-3 mb-4 w-16 h-16 flex items-center justify-center">
             <Check className="h-8 w-8 text-green-600" />
           </div>
-          <CardTitle className="text-center text-2xl">Thank You for Your Order!</CardTitle>
-          <CardDescription className="text-center text-slate-600">
+          <CardTitle className="text-center text-2xl text-black">Thank You for Your Order!</CardTitle>
+          <CardDescription className="text-center text-black/70">
             Your payment was successful and your order has been confirmed
           </CardDescription>
         </CardHeader>
         
         <CardContent className="py-8 space-y-6">
           {/* Order reference */}
-          <div className="text-center p-4 bg-slate-50 rounded-lg border border-slate-100">
-            <p className="text-sm text-slate-500">Order Reference</p>
-            <p className="font-mono text-lg font-medium">{orderReference || orderRef}</p>
+          <div className="text-center p-4 bg-gray-100 rounded-lg border border-gray-200">
+            <p className="text-sm text-black/60">Order Reference</p>
+            <p className="font-mono text-lg font-medium text-black">{orderReference || orderRef}</p>
           </div>
           
           {/* Confirmation message */}
           <div className="text-center space-y-2">
-            <p className="text-slate-700">
+            <p className="text-black">
               We've sent a confirmation email with all the details of your purchase.
             </p>
-            <p className="text-slate-600">
+            <p className="text-black/70">
               You can also view your order details in your account dashboard.
             </p>
           </div>
           
           {/* Shipping details if available */}
           {shippingInfo && (
-            <div className="border border-slate-200 rounded-lg p-4 mb-4">
-              <h3 className="font-medium mb-2 flex items-center">
-                <ShoppingBag className="h-4 w-4 mr-2 text-slate-500" />
+            <div className="border border-gray-200 rounded-lg p-4 mb-4">
+              <h3 className="font-medium mb-2 flex items-center text-black">
+                <ShoppingBag className="h-4 w-4 mr-2 text-black/60" />
                 Shipping Details
               </h3>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-black/70">
                 {shippingInfo.firstName} {shippingInfo.lastName}<br />
                 {shippingInfo.address}<br />
                 {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}<br />
@@ -150,11 +150,11 @@ export default function CheckoutSuccessPage() {
           </div>
         </CardContent>
         
-        <CardFooter className="bg-slate-50 border-t flex justify-center gap-4 py-6">
-          <Button variant="outline" asChild>
+        <CardFooter className="bg-gray-50 border-t border-gray-200 flex justify-center gap-4 py-6">
+          <Button variant="outline" asChild className="border-gray-200 text-black hover:bg-black/5">
             <Link href="/profile/orders">View Orders</Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="bg-black text-white hover:bg-black/90">
             <Link href="/shop">Continue Shopping</Link>
           </Button>
         </CardFooter>
@@ -162,10 +162,10 @@ export default function CheckoutSuccessPage() {
       
       {/* Additional information */}
       <div className="mt-8 text-center">
-        <h3 className="text-lg font-medium mb-2">Need Help?</h3>
-        <p className="text-slate-600 text-sm">
+        <h3 className="text-lg font-medium mb-2 text-black">Need Help?</h3>
+        <p className="text-black/70 text-sm">
           If you have any questions about your order, please contact our
-          <Link href="/contact" className="text-primary font-medium ml-1">customer service team</Link>.
+          <Link href="/contact" className="text-black font-medium ml-1">customer service team</Link>.
         </p>
       </div>
     </div>

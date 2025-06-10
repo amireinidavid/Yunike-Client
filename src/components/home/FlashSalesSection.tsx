@@ -46,42 +46,42 @@ export default function FlashSalesSection() {
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" style={{ 
-          backgroundImage: 'radial-gradient(circle, var(--primary) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, black 1px, transparent 1px)',
           backgroundSize: '30px 30px' 
         }} />
       </div>
       
       <div className="container mx-auto px-4 relative">
-        <div className="bg-primary/10 rounded-2xl px-6 py-8 mb-10">
+        <div className="bg-black/5 rounded-2xl px-6 py-8 mb-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <div className="inline-block bg-primary text-primary-foreground px-3 py-1 text-sm font-medium rounded-full mb-3">
+              <div className="inline-block bg-black text-white px-3 py-1 text-sm font-medium rounded-full mb-3">
                 Limited Time Offer
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Flash Sale</h2>
-              <p className="text-muted-foreground mt-2">Amazing discounts on top products. Hurry before they're gone!</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-black">Flash Sale</h2>
+              <p className="text-black/70 mt-2">Amazing discounts on top products. Hurry before they're gone!</p>
             </div>
             
             {/* Countdown Timer */}
             <div className="mt-6 md:mt-0">
               <div className="flex space-x-3">
                 <div className="flex flex-col items-center">
-                  <div className="bg-card w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm">
+                  <div className="bg-white w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm border border-black/10">
                     {formatTime(timeLeft.hours)}
                   </div>
-                  <span className="text-xs mt-1 text-muted-foreground">Hours</span>
+                  <span className="text-xs mt-1 text-black/60">Hours</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="bg-card w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm">
+                  <div className="bg-white w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm border border-black/10">
                     {formatTime(timeLeft.minutes)}
                   </div>
-                  <span className="text-xs mt-1 text-muted-foreground">Minutes</span>
+                  <span className="text-xs mt-1 text-black/60">Minutes</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="bg-card w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm">
+                  <div className="bg-white w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-sm border border-black/10">
                     {formatTime(timeLeft.seconds)}
                   </div>
-                  <span className="text-xs mt-1 text-muted-foreground">Seconds</span>
+                  <span className="text-xs mt-1 text-black/60">Seconds</span>
                 </div>
               </div>
             </div>
@@ -108,16 +108,16 @@ export default function FlashSalesSection() {
               {/* Stock Indicator */}
               <div className="mt-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
+                  <span className="text-black/60">
                     {product.stockRemaining} of {product.totalStock} left
                   </span>
-                  <span className={`font-medium ${product.stockRemaining < 10 ? 'text-red-500' : 'text-primary'}`}>
+                  <span className={`font-medium ${product.stockRemaining < 10 ? 'text-red-500' : 'text-black'}`}>
                     {Math.round((product.stockRemaining / product.totalStock) * 100)}% left
                   </span>
                 </div>
-                <div className="h-2 bg-muted rounded-full mt-1 overflow-hidden">
+                <div className="h-2 bg-gray-100 rounded-full mt-1 overflow-hidden">
                   <div 
-                    className={`h-full rounded-full ${product.stockRemaining < 10 ? 'bg-red-500' : 'bg-primary'}`}
+                    className={`h-full rounded-full ${product.stockRemaining < 10 ? 'bg-red-500' : 'bg-black'}`}
                     style={{ width: `${(product.stockRemaining / product.totalStock) * 100}%` }}
                   />
                 </div>
@@ -130,7 +130,7 @@ export default function FlashSalesSection() {
         <div className="flex justify-center mt-12">
           <Link 
             href="/flash-sales" 
-            className="inline-flex items-center bg-primary/10 text-primary px-6 py-3 rounded-lg font-medium hover:bg-primary/20 transition-colors"
+            className="inline-flex items-center bg-black/10 text-black px-6 py-3 rounded-lg font-medium hover:bg-black/20 transition-colors"
           >
             View All Flash Sales
             <ChevronRight className="h-4 w-4 ml-1" />

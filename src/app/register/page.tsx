@@ -245,15 +245,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="border-green-200 shadow-xl shadow-emerald-100/70 rounded-xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 text-white p-8 relative">
+        <Card className="border-gray-200 shadow-xl shadow-gray-100/70 rounded-xl overflow-hidden">
+          <CardHeader className="bg-black text-white p-8 relative">
             <div className="absolute top-0 left-0 w-full h-full opacity-20">
               <div className="absolute top-6 left-6 w-20 h-20 rounded-full bg-white/20"></div>
               <div className="absolute bottom-12 right-8 w-16 h-16 rounded-full bg-white/10"></div>
@@ -269,7 +269,7 @@ export default function RegisterPage() {
                  currentStep === "otp" ? "Verify Your Email" :
                  "Complete Your Profile"}
               </CardTitle>
-              <CardDescription className="text-green-50 text-center text-lg">
+              <CardDescription className="text-gray-300 text-center text-lg">
                 {currentStep === "form" ? "Join Yunike and start shopping today" :
                  currentStep === "otp" ? "Enter the code sent to your email" :
                  "Tell us a bit about yourself"}
@@ -302,7 +302,7 @@ export default function RegisterPage() {
                               <Input
                                 placeholder="Enter your name"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -321,7 +321,7 @@ export default function RegisterPage() {
                                 type="email"
                                 placeholder="Your email address"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -340,7 +340,7 @@ export default function RegisterPage() {
                                 type="password"
                                 placeholder="Create a password"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -358,7 +358,7 @@ export default function RegisterPage() {
                               <Input
                                 placeholder="Your phone number"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -375,7 +375,7 @@ export default function RegisterPage() {
 
                       <Button
                         type="submit"
-                        className="w-full h-14 text-lg font-medium bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md shadow-green-200 rounded-lg mt-2"
+                        className="w-full h-14 text-lg font-medium bg-black hover:bg-black/90 text-white shadow-md rounded-lg mt-2"
                         disabled={isRegistering}
                       >
                         {isRegistering ? (
@@ -407,16 +407,16 @@ export default function RegisterPage() {
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring" }}
-                      className="bg-green-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
+                      className="bg-gray-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
                     >
-                      <CheckCircle2 className="h-14 w-14 text-green-600" />
+                      <CheckCircle2 className="h-14 w-14 text-black" />
                     </motion.div>
                     <h3 className="mt-6 text-2xl font-bold text-gray-800">
                       Verify Your Email
                     </h3>
                     <p className="mt-3 text-base text-gray-600">
                       We've sent a verification code to{" "}
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-black">
                         {registrationData?.email}
                       </span>
                     </p>
@@ -437,7 +437,7 @@ export default function RegisterPage() {
                               <Input
                                 placeholder="Enter 6-digit code"
                                 {...field}
-                                className="h-16 text-2xl font-bold tracking-widest text-center focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-16 text-2xl font-bold tracking-widest text-center focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                                 maxLength={6}
                               />
                             </FormControl>
@@ -456,7 +456,7 @@ export default function RegisterPage() {
                       <div className="flex flex-col space-y-5">
                         <Button
                           type="submit"
-                          className="w-full h-14 text-lg font-medium bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md shadow-green-200 rounded-lg"
+                          className="w-full h-14 text-lg font-medium bg-black hover:bg-black/90 text-white shadow-md rounded-lg"
                           disabled={isVerifying}
                         >
                           {isVerifying ? (
@@ -482,7 +482,7 @@ export default function RegisterPage() {
                             size="sm"
                             onClick={handleResendOtp}
                             disabled={secondsLeft > 0}
-                            className="text-green-600 hover:text-green-700 border-green-200 hover:border-green-300 h-10 px-5 text-base"
+                            className="text-black hover:text-black/80 border-gray-200 hover:border-gray-300 h-10 px-5 text-base"
                           >
                             Resend Code
                           </Button>
@@ -514,9 +514,9 @@ export default function RegisterPage() {
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring" }}
-                      className="bg-green-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
+                      className="bg-gray-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
                     >
-                      <User className="h-12 w-12 text-green-600" />
+                      <User className="h-12 w-12 text-black" />
                     </motion.div>
                     <h3 className="mt-6 text-2xl font-bold text-gray-800">
                       Complete Your Profile
@@ -542,7 +542,7 @@ export default function RegisterPage() {
                                 <Input
                                   placeholder="First name"
                                   {...field}
-                                  className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                  className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                                 />
                               </FormControl>
                               <FormMessage className="text-sm font-medium" />
@@ -560,7 +560,7 @@ export default function RegisterPage() {
                                 <Input
                                   placeholder="Last name"
                                   {...field}
-                                  className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                  className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                                 />
                               </FormControl>
                               <FormMessage className="text-sm font-medium" />
@@ -579,7 +579,7 @@ export default function RegisterPage() {
                               <Input
                                 placeholder="Your phone number"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -598,7 +598,7 @@ export default function RegisterPage() {
                               defaultValue={field.value}
                             >
                               <FormControl>
-                                <SelectTrigger className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg">
+                                <SelectTrigger className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg">
                                   <SelectValue placeholder="Select your gender" />
                                 </SelectTrigger>
                               </FormControl>
@@ -624,7 +624,7 @@ export default function RegisterPage() {
                               <Input
                                 type="date"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -641,7 +641,7 @@ export default function RegisterPage() {
 
                       <Button
                         type="submit"
-                        className="w-full h-14 text-lg font-medium bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md shadow-green-200 rounded-lg mt-2"
+                        className="w-full h-14 text-lg font-medium bg-black hover:bg-black/90 text-white shadow-md rounded-lg mt-2"
                         disabled={isCreatingProfile}
                       >
                         {isCreatingProfile ? (
@@ -660,7 +660,7 @@ export default function RegisterPage() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full h-12 text-base bg-transparent border-green-200 text-green-700 hover:bg-green-50"
+                        className="w-full h-12 text-base bg-transparent border-gray-200 text-black hover:bg-gray-50"
                         onClick={() => router.push("/profile")}
                       >
                         Skip for now
@@ -672,7 +672,7 @@ export default function RegisterPage() {
             </AnimatePresence>
           </CardContent>
 
-          <CardFooter className="px-8 py-6 border-t border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
+          <CardFooter className="px-8 py-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-gray-100">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -683,7 +683,7 @@ export default function RegisterPage() {
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="font-bold text-emerald-600 hover:text-emerald-700 hover:underline transition"
+                  className="font-bold text-black hover:text-gray-700 hover:underline transition"
                 >
                   Login here
                 </Link>
@@ -695,9 +695,9 @@ export default function RegisterPage() {
 
       {/* Decorative elements */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-green-200/20 blur-3xl"></div>
-        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-emerald-200/30 blur-3xl"></div>
-        <div className="absolute top-[40%] right-[25%] w-40 h-40 rounded-full bg-teal-200/20 blur-2xl"></div>
+        <div className="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-gray-200/20 blur-3xl"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-gray-200/30 blur-3xl"></div>
+        <div className="absolute top-[40%] right-[25%] w-40 h-40 rounded-full bg-gray-200/20 blur-2xl"></div>
       </div>
     </div>
   );

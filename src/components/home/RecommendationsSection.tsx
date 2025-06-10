@@ -20,7 +20,7 @@ export default function RecommendationsSection() {
   const [personalizedProducts] = useState(() => shuffleArray(products).slice(0, 4));
 
   return (
-    <section className="py-16 bg-card">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-3">

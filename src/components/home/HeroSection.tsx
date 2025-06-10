@@ -59,7 +59,7 @@ export default function HeroSection() {
   const currentSlide = slides[activeSlide];
 
   return (
-    <section className="relative bg-black overflow-hidden">
+    <section className="relative bg-background overflow-hidden">
       <div className="container mx-auto px-4 py-16 md:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Text Content */}
@@ -69,26 +69,26 @@ export default function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-block bg-white/10 text-white px-4 py-1.5 rounded-full text-sm font-medium">
+            <div className="inline-block bg-primary-foreground/20 text-black px-4 py-1.5 rounded-full text-sm font-medium">
               Premium Quality
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black leading-tight">
               {currentSlide.heading}
             </h1>
-            <p className="text-lg text-white/70">
+            <p className="text-lg text-black/80">
               {currentSlide.subheading}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link 
                 href={currentSlide.ctaLink}
-                className="inline-flex items-center bg-white text-black px-6 py-3 rounded-md font-medium hover:bg-white/90 transition-colors"
+                className="inline-flex items-center bg-primary-foreground text-black px-6 py-3 rounded-md font-medium hover:bg-primary-foreground/90 transition-colors"
               >
                 {currentSlide.cta}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link 
                 href="/become-a-seller"
-                className="inline-flex items-center bg-transparent text-white border border-white/20 px-6 py-3 rounded-md font-medium hover:bg-white/10 transition-colors"
+                className="inline-flex items-center bg-transparent text-black border border-black/30 px-6 py-3 rounded-md font-medium hover:bg-black/10 transition-colors"
               >
                 Become a Seller
               </Link>
@@ -102,8 +102,8 @@ export default function HeroSection() {
                   onClick={() => goToSlide(index)}
                   className={`w-2.5 h-2.5 rounded-full transition-all ${
                     index === activeSlide 
-                      ? "bg-white w-8" 
-                      : "bg-white/30 hover:bg-white/50"
+                      ? "bg-black w-8" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
@@ -126,14 +126,14 @@ export default function HeroSection() {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/10" />
           </motion.div>
         </div>
       </div>
       
       {/* Minimal Decorative Elements */}
-      <div className="absolute top-0 right-0 w-full h-1/3 bg-gradient-to-b from-white/5 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-white/10" />
+      <div className="absolute top-0 right-0 w-full h-1/3 bg-gradient-to-b from-black/5 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-black/10" />
     </section>
   );
 }

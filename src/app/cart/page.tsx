@@ -150,18 +150,18 @@ const CartPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center space-y-6"
         >
-          <div className="mx-auto w-24 h-24 rounded-full bg-muted flex items-center justify-center">
-            <ShoppingCart className="h-10 w-10 text-muted-foreground" />
+          <div className="mx-auto w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center">
+            <ShoppingCart className="h-10 w-10 text-black/60" />
           </div>
           
-          <h1 className="text-3xl font-bold">Your cart is empty</h1>
+          <h1 className="text-3xl font-bold text-black">Your cart is empty</h1>
           
-          <p className="text-muted-foreground max-w-md mx-auto">
+          <p className="text-black/70 max-w-md mx-auto">
             Looks like you haven't added anything to your cart yet. Start shopping to find amazing products!
           </p>
           
           <div className="pt-6">
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="bg-black text-white hover:bg-black/90">
               <Link href="/shop">
                 <ShoppingBag className="mr-2 h-5 w-5" />
                 Start Shopping
@@ -211,12 +211,12 @@ const CartPage = () => {
   if (error) {
     return (
       <div className="container max-w-6xl mx-auto py-12 px-4">
-        <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-lg flex flex-col items-center text-center">
-          <AlertCircle className="h-10 w-10 text-destructive mb-4" />
+        <div className="bg-red-50 border border-red-200 p-6 rounded-lg flex flex-col items-center text-center">
+          <AlertCircle className="h-10 w-10 text-red-500 mb-4" />
           <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
-          <p className="text-muted-foreground mb-6">{error}</p>
+          <p className="text-black/70 mb-6">{error}</p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={() => fetchCart()}>
+            <Button onClick={() => fetchCart()} className="bg-black text-white hover:bg-black/90">
               <RefreshCw className="mr-2 h-4 w-4" />
               Try Again
             </Button>
@@ -227,6 +227,7 @@ const CartPage = () => {
                 setCartLoaded(false);
                 toast.success("Cart has been reset");
               }}
+              className="border-black/20 text-black hover:bg-black/5"
             >
               <ShoppingCart className="mr-2 h-4 w-4" />
               Reset Cart
@@ -247,8 +248,8 @@ const CartPage = () => {
     >
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Your Cart</h1>
-          <Button variant="ghost" asChild className="text-sm">
+          <h1 className="text-3xl font-bold text-black">Your Cart</h1>
+          <Button variant="ghost" asChild className="text-sm text-black hover:bg-black/5">
             <Link href="/shop">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Continue Shopping
@@ -267,10 +268,10 @@ const CartPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="flex flex-col sm:flex-row gap-4 border rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="flex flex-col sm:flex-row gap-4 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 {/* Product Image */}
-                <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-md overflow-hidden bg-muted/30 flex-shrink-0">
+                <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                   {item.product?.images?.find(img => img.isMain)?.url ? (
                     <Link href={`/product/${item.productId}`}>
                       <Image 
@@ -283,7 +284,7 @@ const CartPage = () => {
                     </Link>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+                      <ShoppingBag className="h-8 w-8 text-black/50" />
                     </div>
                   )}
                 </div>
@@ -293,23 +294,23 @@ const CartPage = () => {
                   <div className="space-y-1 flex-1">
                     <Link 
                       href={`/product/${item.productId}`} 
-                      className="font-medium hover:text-primary transition-colors line-clamp-2"
+                      className="font-medium hover:text-black/70 transition-colors line-clamp-2"
                     >
                       {item.product.name}
                     </Link>
                     
                     {item.variant && (
                       <div className="flex items-center text-sm">
-                        <span className="text-muted-foreground">Variant:</span>
-                        <Badge variant="outline" className="ml-2">
+                        <span className="text-black/60">Variant:</span>
+                        <Badge variant="outline" className="ml-2 border-black/20">
                           {item.variant.name}
                         </Badge>
                       </div>
                     )}
                     
                     {item.product.vendor && (
-                      <div className="text-sm text-muted-foreground">
-                        Sold by: <Link href={`/vendor/${item.product.vendor.slug}`} className="hover:text-primary">
+                      <div className="text-sm text-black/60">
+                        Sold by: <Link href={`/vendor/${item.product.vendor.slug}`} className="hover:text-black">
                           {item.product.vendor.storeName}
                         </Link>
                       </div>
@@ -319,10 +320,10 @@ const CartPage = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8 rounded-full"
+                        className="h-8 w-8 rounded-full border-black/20 hover:bg-black/5"
                         onClick={() => removeItem(item.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
                       
                       {/* Add to wishlist button could go here */}
@@ -331,11 +332,11 @@ const CartPage = () => {
                   
                   <div className="flex flex-row sm:flex-col justify-between items-end gap-4">
                     {/* Quantity Selector */}
-                    <div className="flex items-center border rounded-md">
+                    <div className="flex items-center border border-gray-200 rounded-md">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-none"
+                        className="h-8 w-8 rounded-none text-black"
                         onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                       >
                         <Minus className="h-3 w-3" />
@@ -348,7 +349,7 @@ const CartPage = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-none"
+                        className="h-8 w-8 rounded-none text-black"
                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                       >
                         <Plus className="h-3 w-3" />
@@ -362,7 +363,7 @@ const CartPage = () => {
                       </div>
                       
                       {item.quantity > 1 && (
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-black/60">
                           ${item.totalPrice.toFixed(2)} total
                         </div>
                       )}
@@ -377,7 +378,7 @@ const CartPage = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                className="text-red-500 border-red-200 hover:bg-red-50"
                 onClick={handleClearCart}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -387,7 +388,7 @@ const CartPage = () => {
               <div className="flex items-center gap-2">
                 <Input 
                   placeholder="Promo code"
-                  className="w-[150px]"
+                  className="w-[150px] border-gray-200 focus-visible:ring-black focus-visible:border-black"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
@@ -395,6 +396,7 @@ const CartPage = () => {
                 <Button 
                   variant="secondary" 
                   size="sm"
+                  className="bg-black/10 text-black hover:bg-black/20"
                   disabled={isApplyingCoupon || !couponCode}
                   onClick={handleApplyCoupon}
                 >
@@ -411,24 +413,24 @@ const CartPage = () => {
           
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-20">
+            <Card className="sticky top-20 bg-background border-background">
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                <h2 className="text-xl font-semibold mb-4 text-black">Order Summary</h2>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-black/60">Subtotal</span>
                     <span>${cart.subtotal.toFixed(2)}</span>
                   </div>
                   
                   {cart.discount > 0 && (
-                    <div className="flex justify-between text-green-600 dark:text-green-400">
+                    <div className="flex justify-between text-green-600">
                       <div className="flex items-center">
                         <span>Discount</span>
                         {cart.couponId && (
                           <Button 
                             variant="ghost" 
-                            className="h-6 w-6 p-0 ml-1 text-muted-foreground"
+                            className="h-6 w-6 p-0 ml-1 text-black/50"
                             onClick={handleRemoveCoupon}
                           >
                             <X className="h-3 w-3" />
@@ -440,18 +442,18 @@ const CartPage = () => {
                   )}
                   
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax</span>
+                    <span className="text-black/60">Tax</span>
                     <span>${cart.tax.toFixed(2)}</span>
                   </div>
                   
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-black/60">Shipping</span>
                     <span>
                       {cart.shipping > 0 ? `$${cart.shipping.toFixed(2)}` : "Calculated at checkout"}
                     </span>
                   </div>
                   
-                  <Separator />
+                  <Separator className="bg-gray-200" />
                   
                   <div className="flex justify-between text-lg font-semibold pt-2">
                     <span>Total</span>
@@ -461,14 +463,14 @@ const CartPage = () => {
               </CardContent>
               
               <CardFooter className="flex flex-col gap-4 px-6 pb-6">
-                <Button className="w-full" size="lg" asChild>
+                <Button className="w-full bg-black text-white hover:bg-black/90" size="lg" asChild>
                   <Link href="/checkout">
                     <CreditCard className="mr-2 h-5 w-5" />
                     Proceed to Checkout
                   </Link>
                 </Button>
                 
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-black/60">
                   <div className="flex items-center gap-2 mb-1">
                     <Shield className="h-4 w-4" />
                     <span>Secure checkout</span>
@@ -487,8 +489,8 @@ const CartPage = () => {
         {/* You might also like section */}
         <div className="pt-16">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">You might also like</h2>
-            <Button variant="outline" size="sm" asChild>
+            <h2 className="text-2xl font-bold text-black">You might also like</h2>
+            <Button variant="outline" size="sm" asChild className="border-gray-200 text-black hover:bg-black/5">
               <Link href="/shop">
                 View All
                 <ChevronRight className="ml-1 h-4 w-4" />
@@ -500,7 +502,7 @@ const CartPage = () => {
             {/* This would be populated with product recommendations */}
             {/* For now showing placeholders */}
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-[320px] rounded-lg bg-muted/40 animate-pulse"></div>
+              <div key={i} className="h-[320px] rounded-lg bg-gray-100 animate-pulse"></div>
             ))}
           </div>
         </div>
@@ -508,28 +510,28 @@ const CartPage = () => {
         {/* Trust signals */}
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg">
-              <div className="bg-primary/10 rounded-full p-3 mb-4">
-                <Truck className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg">
+              <div className="bg-black/10 rounded-full p-3 mb-4">
+                <Truck className="h-6 w-6 text-black" />
               </div>
-              <h3 className="font-medium mb-1">Free Shipping</h3>
-              <p className="text-sm text-muted-foreground">On orders over $50</p>
+              <h3 className="font-medium mb-1 text-black">Free Shipping</h3>
+              <p className="text-sm text-black/60">On orders over $50</p>
             </div>
             
-            <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg">
-              <div className="bg-primary/10 rounded-full p-3 mb-4">
-                <Shield className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg">
+              <div className="bg-black/10 rounded-full p-3 mb-4">
+                <Shield className="h-6 w-6 text-black" />
               </div>
-              <h3 className="font-medium mb-1">Secure Payments</h3>
-              <p className="text-sm text-muted-foreground">Encrypted & safe checkout</p>
+              <h3 className="font-medium mb-1 text-black">Secure Payments</h3>
+              <p className="text-sm text-black/60">Encrypted & safe checkout</p>
             </div>
             
-            <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg">
-              <div className="bg-primary/10 rounded-full p-3 mb-4">
-                <RefreshCw className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg">
+              <div className="bg-black/10 rounded-full p-3 mb-4">
+                <RefreshCw className="h-6 w-6 text-black" />
               </div>
-              <h3 className="font-medium mb-1">Easy Returns</h3>
-              <p className="text-sm text-muted-foreground">30-day return policy</p>
+              <h3 className="font-medium mb-1 text-black">Easy Returns</h3>
+              <p className="text-sm text-black/60">30-day return policy</p>
             </div>
           </div>
         </div>

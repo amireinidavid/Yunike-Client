@@ -108,14 +108,14 @@ export default function CheckoutPage() {
 
   // Render Order Summary
   const OrderSummary = () => (
-    <Card className="bg-slate-50">
+    <Card className="bg-gray-100 border-gray-200">
       <CardHeader>
-        <CardTitle className="text-lg font-medium">Order Summary</CardTitle>
+        <CardTitle className="text-lg font-medium text-black">Order Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {cart?.items?.map((item: any) => (
           <div key={item.id} className="flex items-center space-x-4">
-            <div className="relative w-16 h-16 rounded-md overflow-hidden bg-slate-100">
+            <div className="relative w-16 h-16 rounded-md overflow-hidden bg-white">
               {item.product?.images?.[0]?.url ? (
                 <Image 
                   src={item.product.images[0].url} 
@@ -124,15 +124,15 @@ export default function CheckoutPage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-slate-400">
+                <div className="flex items-center justify-center h-full text-black/40">
                   <ShoppingBag size={20} />
                 </div>
               )}
             </div>
             <div className="flex-1">
-              <p className="font-medium">{item.product.name}</p>
+              <p className="font-medium text-black">{item.product.name}</p>
               {item.variant && (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-black/60">
                   {Object.entries(item.variant.options).map(([key, value]) => (
                     `${key}: ${value}`
                   )).join(', ')}
@@ -146,19 +146,19 @@ export default function CheckoutPage() {
           </div>
         ))}
         
-        <Separator className="my-4" />
+        <Separator className="my-4 bg-gray-200" />
         
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span>Subtotal</span>
+            <span className="text-black/70">Subtotal</span>
             <span>${cart?.subtotal?.toFixed(2) || '0.00'}</span>
           </div>
           <div className="flex justify-between">
-            <span>Shipping</span>
+            <span className="text-black/70">Shipping</span>
             <span>${cart?.shipping?.toFixed(2) || '0.00'}</span>
           </div>
           <div className="flex justify-between">
-            <span>Tax</span>
+            <span className="text-black/70">Tax</span>
             <span>${cart?.tax?.toFixed(2) || '0.00'}</span>
           </div>
           {cart?.discount && cart.discount > 0 && (
@@ -169,9 +169,9 @@ export default function CheckoutPage() {
           )}
         </div>
         
-        <Separator className="my-4" />
+        <Separator className="my-4 bg-gray-200" />
         
-        <div className="flex justify-between font-semibold">
+        <div className="flex justify-between font-semibold text-black">
           <span>Total</span>
           <span>${cart?.total?.toFixed(2) || '0.00'}</span>
         </div>
@@ -183,8 +183,8 @@ export default function CheckoutPage() {
   if (isCartLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px] space-y-4">
-        <Clock className="w-12 h-12 animate-spin text-primary" />
-        <p className="text-lg font-medium">Loading your checkout...</p>
+        <Clock className="w-12 h-12 animate-spin text-black" />
+        <p className="text-lg font-medium text-black">Loading your checkout...</p>
       </div>
     );
   }
@@ -193,12 +193,12 @@ export default function CheckoutPage() {
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px] space-y-6 px-4">
-        <ShoppingBag className="w-20 h-20 text-slate-300" />
-        <h1 className="text-2xl font-bold text-center">Your cart is empty</h1>
-        <p className="text-slate-500 text-center max-w-md">
+        <ShoppingBag className="w-20 h-20 text-black/30" />
+        <h1 className="text-2xl font-bold text-center text-black">Your cart is empty</h1>
+        <p className="text-black/70 text-center max-w-md">
           Looks like you haven't added anything to your cart yet. Explore our products and find something you'll love!
         </p>
-        <Button asChild>
+        <Button asChild className="bg-black text-white hover:bg-black/90">
           <Link href="/shop">Continue Shopping</Link>
         </Button>
       </div>
@@ -209,21 +209,21 @@ export default function CheckoutPage() {
     <div className="container mx-auto px-4 py-10 max-w-7xl">
       {/* Checkout header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold">Checkout</h1>
-        <p className="mt-2 text-slate-600">Complete your purchase securely</p>
+        <h1 className="text-3xl font-bold text-black">Checkout</h1>
+        <p className="mt-2 text-black/70">Complete your purchase securely</p>
       </div>
       
       {/* Checkout steps */}
       <div className="flex justify-between mb-12 max-w-3xl">
         {CHECKOUT_STEPS.map((step, index) => (
           <div key={step.id} className="flex flex-1 items-center">
-            <div className={`flex flex-col items-center ${index <= activeStep ? 'text-primary' : 'text-slate-400'}`}>
+            <div className={`flex flex-col items-center ${index <= activeStep ? 'text-black' : 'text-black/40'}`}>
               <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                 index < activeStep 
-                  ? 'bg-primary text-white border-primary' 
+                  ? 'bg-black text-white border-black' 
                   : index === activeStep 
-                    ? 'border-primary text-primary' 
-                    : 'border-slate-200'
+                    ? 'border-black text-black' 
+                    : 'border-gray-200'
               }`}>
                 {index < activeStep ? (
                   <Check className="w-5 h-5" />
@@ -232,14 +232,14 @@ export default function CheckoutPage() {
                 )}
               </div>
               <span className={`mt-2 text-xs font-medium ${
-                index <= activeStep ? 'text-slate-900' : 'text-slate-400'
+                index <= activeStep ? 'text-black' : 'text-black/40'
               }`}>
                 {step.title}
               </span>
             </div>
             
             {index < CHECKOUT_STEPS.length - 1 && (
-              <div className="flex-1 h-px bg-slate-200 mx-2 mt-5" />
+              <div className="flex-1 h-px bg-gray-200 mx-2 mt-5" />
             )}
           </div>
         ))}
@@ -258,17 +258,17 @@ export default function CheckoutPage() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card>
+                <Card className="border-gray-200">
                   <CardHeader>
-                    <CardTitle>Review Your Order</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-black">Review Your Order</CardTitle>
+                    <CardDescription className="text-black/70">
                       Please verify your items before proceeding
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {cart.items.map((item: any) => (
-                      <div key={item.id} className="flex items-center space-x-4 py-2 border-b">
-                        <div className="relative w-20 h-20 rounded-md overflow-hidden bg-slate-100">
+                      <div key={item.id} className="flex items-center space-x-4 py-2 border-b border-gray-200">
+                        <div className="relative w-20 h-20 rounded-md overflow-hidden bg-gray-100">
                           {item.product?.images?.[0]?.url ? (
                             <Image 
                               src={item.product.images[0].url} 
@@ -277,35 +277,35 @@ export default function CheckoutPage() {
                               className="object-cover"
                             />
                           ) : (
-                            <div className="flex items-center justify-center h-full text-slate-400">
+                            <div className="flex items-center justify-center h-full text-black/40">
                               <ShoppingBag size={24} />
                             </div>
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-medium">{item.product.name}</h3>
+                          <h3 className="font-medium text-black">{item.product.name}</h3>
                           {item.variant && (
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-black/60">
                               {Object.entries(item.variant.options).map(([key, value]) => (
                                 `${key}: ${value}`
                               )).join(', ')}
                             </p>
                           )}
-                          <p className="text-sm text-slate-500 mt-1">
+                          <p className="text-sm text-black/60 mt-1">
                             Quantity: {item.quantity}
                           </p>
                         </div>
-                        <div className="font-medium">
+                        <div className="font-medium text-black">
                           ${item.totalPrice.toFixed(2)}
                         </div>
                       </div>
                     ))}
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild className="border-gray-200 text-black hover:bg-black/5">
                       <Link href="/cart">Edit Cart</Link>
                     </Button>
-                    <Button onClick={handleNextStep}>
+                    <Button onClick={handleNextStep} className="bg-black text-white hover:bg-black/90">
                       Continue to Shipping <ChevronRight className="ml-2 w-4 h-4" />
                     </Button>
                   </CardFooter>
@@ -322,13 +322,13 @@ export default function CheckoutPage() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card>
+                <Card className="border-gray-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center">
+                    <CardTitle className="flex items-center text-black">
                       <MapPin className="mr-2 h-5 w-5" />
                       Shipping Information
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-black/70">
                       Enter your shipping details
                     </CardDescription>
                   </CardHeader>
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
                     <form onSubmit={handleShippingSubmit} className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="firstName">First Name *</Label>
+                          <Label htmlFor="firstName" className="text-black">First Name *</Label>
                           <Input
                             id="firstName"
                             name="firstName"
@@ -344,10 +344,11 @@ export default function CheckoutPage() {
                             value={shippingForm.firstName}
                             onChange={handleShippingChange}
                             required
+                            className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="lastName">Last Name *</Label>
+                          <Label htmlFor="lastName" className="text-black">Last Name *</Label>
                           <Input
                             id="lastName"
                             name="lastName"
@@ -355,12 +356,13 @@ export default function CheckoutPage() {
                             value={shippingForm.lastName}
                             onChange={handleShippingChange}
                             required
+                            className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email Address *</Label>
+                        <Label htmlFor="email" className="text-black">Email Address *</Label>
                         <Input
                           id="email"
                           name="email"
@@ -369,11 +371,12 @@ export default function CheckoutPage() {
                           value={shippingForm.email}
                           onChange={handleShippingChange}
                           required
+                          className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number *</Label>
+                        <Label htmlFor="phone" className="text-black">Phone Number *</Label>
                         <Input
                           id="phone"
                           name="phone"
@@ -381,11 +384,12 @@ export default function CheckoutPage() {
                           value={shippingForm.phone}
                           onChange={handleShippingChange}
                           required
+                          className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="address">Street Address *</Label>
+                        <Label htmlFor="address" className="text-black">Street Address *</Label>
                         <Input
                           id="address"
                           name="address"
@@ -393,12 +397,13 @@ export default function CheckoutPage() {
                           value={shippingForm.address}
                           onChange={handleShippingChange}
                           required
+                          className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="city">City *</Label>
+                          <Label htmlFor="city" className="text-black">City *</Label>
                           <Input
                             id="city"
                             name="city"
@@ -406,10 +411,11 @@ export default function CheckoutPage() {
                             value={shippingForm.city}
                             onChange={handleShippingChange}
                             required
+                            className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="state">State/Province *</Label>
+                          <Label htmlFor="state" className="text-black">State/Province *</Label>
                           <Input
                             id="state"
                             name="state"
@@ -417,13 +423,14 @@ export default function CheckoutPage() {
                             value={shippingForm.state}
                             onChange={handleShippingChange}
                             required
+                            className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="zipCode">Zip/Postal Code *</Label>
+                          <Label htmlFor="zipCode" className="text-black">Zip/Postal Code *</Label>
                           <Input
                             id="zipCode"
                             name="zipCode"
@@ -431,15 +438,16 @@ export default function CheckoutPage() {
                             value={shippingForm.zipCode}
                             onChange={handleShippingChange}
                             required
+                            className="border-gray-200 focus-visible:ring-black focus-visible:border-black"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="country">Country *</Label>
+                          <Label htmlFor="country" className="text-black">Country *</Label>
                           <Select 
                             value={shippingForm.country} 
                             onValueChange={handleCountryChange}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="border-gray-200 focus:ring-black">
                               <SelectValue placeholder="Select a country" />
                             </SelectTrigger>
                             <SelectContent>
@@ -455,10 +463,10 @@ export default function CheckoutPage() {
                       </div>
 
                       <CardFooter className="px-0 pt-4 flex justify-between">
-                        <Button type="button" variant="outline" onClick={handlePrevStep}>
+                        <Button type="button" variant="outline" onClick={handlePrevStep} className="border-gray-200 text-black hover:bg-black/5">
                           Back to Review
                         </Button>
-                        <Button type="submit">
+                        <Button type="submit" className="bg-black text-white hover:bg-black/90">
                           Continue to Payment <ChevronRight className="ml-2 w-4 h-4" />
                         </Button>
                       </CardFooter>
@@ -477,21 +485,21 @@ export default function CheckoutPage() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card>
+                <Card className="border-gray-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center">
+                    <CardTitle className="flex items-center text-black">
                       <CreditCard className="mr-2 h-5 w-5" />
                       Payment
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-black/70">
                       You'll be redirected to Stripe to complete your payment securely
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
-                      <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                        <h3 className="font-medium mb-2">Shipping Address</h3>
-                        <p className="text-sm text-slate-500">
+                      <div className="bg-gray-100 rounded-lg p-4 border border-gray-200">
+                        <h3 className="font-medium mb-2 text-black">Shipping Address</h3>
+                        <p className="text-sm text-black/70">
                           {shippingInfo?.firstName} {shippingInfo?.lastName}<br />
                           {shippingInfo?.address}<br />
                           {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zipCode}<br />
@@ -502,12 +510,13 @@ export default function CheckoutPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <Button variant="outline" onClick={handlePrevStep}>
+                    <Button variant="outline" onClick={handlePrevStep} className="border-gray-200 text-black hover:bg-black/5">
                       Back to Shipping
                     </Button>
                     <Button 
                       onClick={handleProceedToPayment}
                       disabled={isCreatingSession}
+                      className="bg-black text-white hover:bg-black/90"
                     >
                       {isCreatingSession ? (
                         <span className="flex items-center">
@@ -534,31 +543,31 @@ export default function CheckoutPage() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card>
+                <Card className="border-gray-200">
                   <CardHeader>
                     <div className="mx-auto rounded-full bg-green-100 p-3 mb-4">
                       <Check className="h-8 w-8 text-green-600" />
                     </div>
-                    <CardTitle className="text-center">Order Confirmed!</CardTitle>
-                    <CardDescription className="text-center">
+                    <CardTitle className="text-center text-black">Order Confirmed!</CardTitle>
+                    <CardDescription className="text-center text-black/70">
                       Your order has been successfully placed
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {orderReference && (
-                      <div className="text-center p-4 bg-slate-50 rounded-lg">
-                        <p className="text-sm text-slate-500">Order Reference</p>
-                        <p className="font-mono font-medium">{orderReference}</p>
+                      <div className="text-center p-4 bg-gray-100 rounded-lg">
+                        <p className="text-sm text-black/70">Order Reference</p>
+                        <p className="font-mono font-medium text-black">{orderReference}</p>
                       </div>
                     )}
                     
-                    <p className="text-center text-slate-600">
+                    <p className="text-center text-black/70">
                       We've sent a confirmation email to <span className="font-medium">{shippingInfo?.email}</span> with your order details.
                     </p>
                     
-                    <div className="border border-slate-200 rounded-lg p-4">
-                      <h3 className="font-medium mb-2">Shipping Information</h3>
-                      <p className="text-sm text-slate-500">
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h3 className="font-medium mb-2 text-black">Shipping Information</h3>
+                      <p className="text-sm text-black/70">
                         {shippingInfo?.firstName} {shippingInfo?.lastName}<br />
                         {shippingInfo?.address}<br />
                         {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zipCode}<br />
@@ -567,7 +576,7 @@ export default function CheckoutPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="justify-center">
-                    <Button asChild>
+                    <Button asChild className="bg-black text-white hover:bg-black/90">
                       <Link href="/shop">Continue Shopping</Link>
                     </Button>
                   </CardFooter>
@@ -582,21 +591,21 @@ export default function CheckoutPage() {
           <OrderSummary />
           
           {error && (
-            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
+            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100">
               {error}
             </div>
           )}
           
           {/* Additional help info */}
-          <Card className="mt-4">
+          <Card className="mt-4 border-gray-200">
             <CardContent className="pt-4">
               <div className="text-sm space-y-4">
-                <h3 className="font-semibold">Need Help?</h3>
-                <p className="text-slate-600">
+                <h3 className="font-semibold text-black">Need Help?</h3>
+                <p className="text-black/70">
                   If you have any questions about your order, please contact our customer support:
                 </p>
-                <p><span className="font-medium">Email:</span> support@yunike.com</p>
-                <p><span className="font-medium">Phone:</span> +1 (555) 123-4567</p>
+                <p className="text-black"><span className="font-medium">Email:</span> support@yunike.com</p>
+                <p className="text-black"><span className="font-medium">Phone:</span> +1 (555) 123-4567</p>
               </div>
             </CardContent>
           </Card>

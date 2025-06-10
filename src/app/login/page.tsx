@@ -209,15 +209,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="border-green-200 shadow-xl shadow-emerald-100/70 rounded-xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 text-white p-8 relative">
+        <Card className="border-gray-200 shadow-xl shadow-gray-100/70 rounded-xl overflow-hidden">
+          <CardHeader className="bg-black text-white p-8 relative">
             <div className="absolute top-0 left-0 w-full h-full opacity-20">
               <div className="absolute top-6 left-6 w-20 h-20 rounded-full bg-white/20"></div>
               <div className="absolute bottom-12 right-8 w-16 h-16 rounded-full bg-white/10"></div>
@@ -231,7 +231,7 @@ export default function LoginPage() {
               <CardTitle className="text-3xl font-bold text-center mb-2">
                 Welcome Back
               </CardTitle>
-              <CardDescription className="text-green-50 text-center text-lg">
+              <CardDescription className="text-gray-300 text-center text-lg">
                 Log in to your Yunike account
               </CardDescription>
             </motion.div>
@@ -263,7 +263,7 @@ export default function LoginPage() {
                                 type="email"
                                 placeholder="Your email address"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -282,7 +282,7 @@ export default function LoginPage() {
                                 type="password"
                                 placeholder="Enter your password"
                                 {...field}
-                                className="h-12 text-base focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-12 text-base focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                               />
                             </FormControl>
                             <FormMessage className="text-sm font-medium" />
@@ -300,7 +300,7 @@ export default function LoginPage() {
                                 <Checkbox
                                   checked={field.value}
                                   onCheckedChange={field.onChange}
-                                  className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                                  className="data-[state=checked]:bg-black data-[state=checked]:border-black"
                                 />
                               </FormControl>
                               <FormLabel className="text-sm font-medium text-gray-600 cursor-pointer">
@@ -312,7 +312,7 @@ export default function LoginPage() {
                         
                         <Link
                           href="#"
-                          className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
+                          className="text-sm font-medium text-black hover:text-gray-700 hover:underline"
                         >
                           Forgot password?
                         </Link>
@@ -327,7 +327,7 @@ export default function LoginPage() {
 
                       <Button
                         type="submit"
-                        className="w-full h-14 text-lg font-medium bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md shadow-green-200 rounded-lg mt-2"
+                        className="w-full h-14 text-lg font-medium bg-black hover:bg-black/90 text-white shadow-md rounded-lg mt-2"
                         disabled={isLoggingIn}
                       >
                         {isLoggingIn ? (
@@ -359,16 +359,16 @@ export default function LoginPage() {
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring" }}
-                      className="bg-green-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
+                      className="bg-gray-100 rounded-full p-4 w-24 h-24 mx-auto flex items-center justify-center"
                     >
-                      <CheckCircle2 className="h-14 w-14 text-green-600" />
+                      <CheckCircle2 className="h-14 w-14 text-black" />
                     </motion.div>
                     <h3 className="mt-6 text-2xl font-bold text-gray-800">
                       Verification Required
                     </h3>
                     <p className="mt-3 text-base text-gray-600">
                       We've sent a verification code to{" "}
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-black">
                         {loginData?.email}
                       </span>
                     </p>
@@ -389,7 +389,7 @@ export default function LoginPage() {
                               <Input
                                 placeholder="Enter 6-digit code"
                                 {...field}
-                                className="h-16 text-2xl font-bold tracking-widest text-center focus-visible:ring-green-500 border-green-200 focus-visible:border-green-500 bg-green-50/40 rounded-lg"
+                                className="h-16 text-2xl font-bold tracking-widest text-center focus-visible:ring-black border-gray-200 focus-visible:border-black bg-gray-50/40 rounded-lg"
                                 maxLength={6}
                               />
                             </FormControl>
@@ -408,7 +408,7 @@ export default function LoginPage() {
                       <div className="flex flex-col space-y-5">
                         <Button
                           type="submit"
-                          className="w-full h-14 text-lg font-medium bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md shadow-green-200 rounded-lg"
+                          className="w-full h-14 text-lg font-medium bg-black hover:bg-black/90 text-white shadow-md rounded-lg"
                           disabled={isVerifying}
                         >
                           {isVerifying ? (
@@ -434,7 +434,7 @@ export default function LoginPage() {
                             size="sm"
                             onClick={handleResendOtp}
                             disabled={secondsLeft > 0}
-                            className="text-green-600 hover:text-green-700 border-green-200 hover:border-green-300 h-10 px-5 text-base"
+                            className="text-black hover:text-black/80 border-gray-200 hover:border-gray-300 h-10 px-5 text-base"
                           >
                             Resend Code
                           </Button>
@@ -459,91 +459,24 @@ export default function LoginPage() {
           <CardFooter className="bg-gray-50 px-8 py-4 flex flex-col">
             <div className="text-sm text-center text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/register" className="text-emerald-600 hover:underline">
+              <Link href="/register" className="text-black hover:underline">
                 Sign up
               </Link>
             </div>
             
-            <DevTools />
           </CardFooter>
         </Card>
       </motion.div>
 
       {/* Decorative elements */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-green-200/20 blur-3xl"></div>
-        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-emerald-200/30 blur-3xl"></div>
-        <div className="absolute top-[40%] right-[25%] w-40 h-40 rounded-full bg-teal-200/20 blur-2xl"></div>
+        <div className="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-gray-200/20 blur-3xl"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-gray-200/30 blur-3xl"></div>
+        <div className="absolute top-[40%] right-[25%] w-40 h-40 rounded-full bg-gray-200/20 blur-2xl"></div>
       </div>
 
-      {/* Debug tools */}
-      <DevTools />
+    
     </div>
   );
 }
 
-// This is a debugging component that can be used to test token refresh
-function TokenDebugger() {
-  const { refreshTokenManually } = useAuth();
-  
-  const checkTokenStatus = () => {
-    // Check localStorage tokens
-    const localStorageToken = localStorage.getItem('accessToken');
-    const refreshTokenValue = localStorage.getItem('refreshToken');
-    
-    // Check cookie tokens (non-httpOnly cookies can be read by JS)
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=');
-      acc[key] = value;
-      return acc;
-    }, {} as Record<string, string>);
-    
-    console.log('🔍 Token Status:');
-    console.log('  localStorage accessToken:', localStorageToken ? '✅ Present' : '❌ Missing');
-    console.log('  localStorage refreshToken:', refreshTokenValue ? '✅ Present' : '❌ Missing');
-    console.log('  cookie accessToken:', cookies.accessToken ? '✅ Present' : '❌ Missing');
-    console.log('  JWT expired:', localStorageToken ? (isJwtExpired(localStorageToken) ? '⚠️ Yes' : '✅ No') : '❌ No token');
-  };
-  
-  const testTokenRefresh = async () => {
-    console.log('🔄 Testing manual token refresh...');
-    const result = await refreshTokenManually();
-    console.log('🔄 Refresh result:', result ? '✅ Success' : '❌ Failed');
-    checkTokenStatus();
-  };
-  
-  const simulateExpiredToken = () => {
-    // This doesn't actually delete the token, just replaces it with an expired one
-    const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
-    localStorage.setItem('accessToken', expiredToken);
-    console.log('⚠️ Replaced token with expired one');
-    checkTokenStatus();
-  };
-  
-  return (
-    <div className="mt-8 p-4 border border-dashed border-primary/50 rounded-lg">
-      <h3 className="text-sm font-semibold mb-3">Token Debug Panel (Dev Only)</h3>
-      <div className="flex flex-wrap gap-2">
-        <Button size="sm" variant="outline" onClick={checkTokenStatus}>
-          Check Token Status
-        </Button>
-        <Button size="sm" variant="outline" onClick={testTokenRefresh}>
-          Test Token Refresh
-        </Button>
-        <Button size="sm" variant="outline" onClick={simulateExpiredToken}>
-          Simulate Expired Token
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// Make sure this is visible in development environment only
-function DevTools() {
-  // Only show in development
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
-  
-  return <TokenDebugger />;
-}

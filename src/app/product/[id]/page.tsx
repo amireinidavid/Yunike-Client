@@ -278,7 +278,7 @@ const ProductPage = () => {
         ) : (
           <Button 
             size="lg" 
-            className="rounded-full h-16 w-16 shadow-lg bg-gradient-to-r from-primary to-primary/80 p-0"
+            className="rounded-full h-16 w-16 shadow-lg bg-black text-white p-0"
             onClick={addToCart}
             disabled={isProductInCart && !product.hasVariants}
           >
@@ -592,7 +592,7 @@ const ProductPage = () => {
             </div>
             
             <Button 
-              className="h-12 flex-1 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md shadow-primary/10" 
+              className="h-12 flex-1 bg-black hover:bg-black/90 text-white shadow-md" 
               disabled={product.inventory === 0 || (isProductInCart && !product.hasVariants)}
               onClick={addToCart}
             >
@@ -602,11 +602,11 @@ const ProductPage = () => {
                 : "Add to Cart"}
             </Button>
             
-            <Button variant="outline" size="icon" className="h-12 w-12 border-primary/20 hover:bg-primary/5">
+            <Button variant="outline" size="icon" className="h-12 w-12 border-black/20 hover:bg-black/5">
               <Heart className="h-5 w-5 text-red-500" />
             </Button>
             
-            <Button variant="outline" size="icon" className="h-12 w-12 border-primary/20 hover:bg-primary/5">
+            <Button variant="outline" size="icon" className="h-12 w-12 border-black/20 hover:bg-black/5">
               <Share2 className="h-5 w-5" />
             </Button>
           </motion.div>
@@ -616,28 +616,28 @@ const ProductPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="bg-muted/50 rounded-lg p-4"
+            className="bg-gray-100 rounded-lg p-4"
           >
             <h3 className="font-medium mb-3 flex items-center gap-2">
               <Truck className="h-4 w-4" /> Delivery Options
             </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3 text-sm">
-                <div className="h-5 w-5 mt-0.5 flex items-center justify-center rounded-full bg-primary/10">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                <div className="h-5 w-5 mt-0.5 flex items-center justify-center rounded-full bg-black/10">
+                  <CheckCircle2 className="h-4 w-4 text-black" />
                 </div>
                 <div>
                   <p className="font-medium">Standard Delivery</p>
-                  <p className="text-muted-foreground">Free shipping for orders over $50</p>
+                  <p className="text-black/70">Free shipping for orders over $50</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 text-sm">
-                <div className="h-5 w-5 mt-0.5 flex items-center justify-center rounded-full bg-primary/10">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                <div className="h-5 w-5 mt-0.5 flex items-center justify-center rounded-full bg-black/10">
+                  <CheckCircle2 className="h-4 w-4 text-black" />
                 </div>
                 <div>
                   <p className="font-medium">Express Delivery</p>
-                  <p className="text-muted-foreground">Get it in 24 hours (order before 2pm)</p>
+                  <p className="text-black/70">Get it in 24 hours (order before 2pm)</p>
                 </div>
               </div>
             </div>
@@ -870,7 +870,7 @@ const ProductPage = () => {
               
               {/* Add to cart button */}
               <Button 
-                className="w-full relative z-10 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary" 
+                className="w-full relative z-10 bg-black hover:bg-black/90 text-white" 
                 disabled={product.inventory === 0 || (isProductInCart && !product.hasVariants)}
                 onClick={addToCart}
               >

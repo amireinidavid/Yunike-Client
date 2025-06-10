@@ -70,9 +70,9 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+    <div className="group relative bg-white rounded-lg overflow-hidden border border-black/10 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
       {/* Product Image with badges */}
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-square overflow-hidden bg-gray-100">
         <Link href={`/product/${id}`} className="block w-full h-full">
           <Image
             src={image}
@@ -89,7 +89,7 @@ export default function ProductCard({
           className={`absolute top-3 left-3 p-2 rounded-full shadow-md backdrop-blur-sm transition-all duration-300
             ${isWishlisted 
               ? 'bg-red-500 text-white scale-110' 
-              : 'bg-white/80 text-foreground hover:bg-white'} 
+              : 'bg-white/80 text-black hover:bg-white'} 
             hover:scale-110 z-10`}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
@@ -98,7 +98,7 @@ export default function ProductCard({
           
         {/* Discount badge */}
         {discountPercentage && discountPercentage > 0 && (
-          <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-full shadow-sm z-10">
+          <span className="absolute top-3 right-3 bg-black text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm z-10">
             -{discountPercentage}%
           </span>
         )}
@@ -108,7 +108,7 @@ export default function ProductCard({
           {badges.map((badge, index) => (
             <span 
               key={index} 
-              className="bg-accent/90 text-accent-foreground text-xs font-medium px-2 py-1 rounded-full shadow-sm backdrop-blur-sm"
+              className="bg-black/70 text-white text-xs font-medium px-2 py-1 rounded-full shadow-sm backdrop-blur-sm"
             >
               {badge}
             </span>
@@ -123,12 +123,12 @@ export default function ProductCard({
       <Link href={`/product/${id}`} className="block flex-grow">
         <div className="p-4 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-1">
-            <h3 className="font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="font-medium text-black line-clamp-2 group-hover:text-black/80 transition-colors">
               {title}
             </h3>
           </div>
           
-          <p className="text-sm text-muted-foreground mb-2">by {vendorName}</p>
+          <p className="text-sm text-black/60 mb-2">by {vendorName}</p>
           
           {/* Rating */}
           <div className="flex items-center mb-3">
@@ -140,15 +140,15 @@ export default function ProductCard({
                 />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground ml-1">({rating.toFixed(1)})</span>
+            <span className="text-xs text-black/60 ml-1">({rating.toFixed(1)})</span>
           </div>
           
           {/* Price */}
           <div className="mt-auto">
             <div className="flex items-center gap-2 mb-3">
-              <span className="font-semibold text-foreground">{formatPrice(price)}</span>
+              <span className="font-semibold text-black">{formatPrice(price)}</span>
               {originalPrice && originalPrice > price && (
-                <span className="text-sm text-muted-foreground line-through">
+                <span className="text-sm text-black/60 line-through">
                   {formatPrice(originalPrice)}
                 </span>
               )}
@@ -164,9 +164,9 @@ export default function ProductCard({
           disabled={isAddingToCart}
           className={`w-full py-2.5 px-4 rounded-md flex items-center justify-center gap-2 font-medium transition-all duration-300
             ${isAddingToCart 
-              ? 'bg-primary/80 cursor-not-allowed' 
-              : 'bg-primary hover:bg-primary/90 active:scale-[0.98]'} 
-            text-primary-foreground shadow-sm`}
+              ? 'bg-black/80 cursor-not-allowed' 
+              : 'bg-black hover:bg-black/90 active:scale-[0.98]'} 
+            text-white shadow-sm`}
         >
           <ShoppingCart className={`h-[18px] w-[18px] ${isAddingToCart ? 'animate-bounce' : ''}`} />
           {isAddingToCart ? 'Adding...' : 'Add to Cart'}

@@ -100,7 +100,7 @@ const Header = () => {
             </button>
             )}
             
-            <div className="absolute right-0 mt-2 w-72 rounded-lg shadow-lg py-2 bg-card border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute right-0 mt-2 w-72 rounded-lg shadow-lg py-2 bg-background border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               {isAuthenticated && user ? (
                 <>
                   <div className="px-4 py-3 border-b border-border">

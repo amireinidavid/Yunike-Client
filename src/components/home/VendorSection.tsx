@@ -28,7 +28,7 @@ export default function VendorSection() {
   };
 
   return (
-    <section className="py-16 bg-muted">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center">Our Community</h2>

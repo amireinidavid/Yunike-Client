@@ -18,7 +18,7 @@ export default function FeaturedProductsSection() {
     : products.filter(product => product.category === activeTab);
 
   return (
-    <section className="py-16 bg-muted">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
           <div>

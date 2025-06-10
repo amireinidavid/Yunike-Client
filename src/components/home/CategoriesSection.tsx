@@ -41,13 +41,13 @@ export default function CategoriesSection() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Shop by Category</h2>
-            <p className="text-muted-foreground mt-2">Browse our curated collection of unique products</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-black">Shop by Category</h2>
+            <p className="text-black/70 mt-2">Browse our curated collection of unique products</p>
           </div>
           
           <Link 
             href="/categories" 
-            className="text-primary font-medium hover:underline hidden md:block"
+            className="text-black font-medium hover:underline hidden md:block"
           >
             View All Categories
           </Link>
@@ -84,10 +84,10 @@ export default function CategoriesSection() {
           {showLeftArrow && (
             <button 
               onClick={() => scroll('left')} 
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/80 shadow-md hover:bg-white transition-colors -ml-4"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors -ml-4"
               aria-label="Scroll left"
             >
-              <ChevronLeft className="h-6 w-6 text-foreground" />
+              <ChevronLeft className="h-6 w-6 text-black" />
             </button>
           )}
           
@@ -102,7 +102,7 @@ export default function CategoriesSection() {
                 href={`/category/${category.slug}`}
                 className="shrink-0 w-[280px] group snap-start"
               >
-                <div className="bg-card rounded-xl overflow-hidden border border-border group-hover:shadow-md transition-all duration-300 h-full">
+                <div className="bg-white rounded-xl overflow-hidden border border-black/10 group-hover:shadow-md transition-all duration-300 h-full">
                   <div className="relative h-48">
                     <Image
                       src={category.image}
@@ -113,13 +113,13 @@ export default function CategoriesSection() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-lg text-black group-hover:text-black/80 transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-muted-foreground text-sm mt-1">{category.description}</p>
+                    <p className="text-black/60 text-sm mt-1">{category.description}</p>
                     <div className="flex justify-between items-center mt-3">
-                      <span className="text-sm font-medium">{category.productCount} Products</span>
-                      <span className="text-primary text-sm font-medium group-hover:underline">
+                      <span className="text-sm font-medium text-black/70">{category.productCount} Products</span>
+                      <span className="text-black text-sm font-medium group-hover:underline">
                         Browse
                       </span>
                     </div>
@@ -132,10 +132,10 @@ export default function CategoriesSection() {
           {showRightArrow && (
             <button 
               onClick={() => scroll('right')} 
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/80 shadow-md hover:bg-white transition-colors -mr-4"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors -mr-4"
               aria-label="Scroll right"
             >
-              <ChevronRight className="h-6 w-6 text-foreground" />
+              <ChevronRight className="h-6 w-6 text-black" />
             </button>
           )}
         </div>
@@ -144,7 +144,7 @@ export default function CategoriesSection() {
         <div className="flex justify-center mt-8 md:hidden">
           <Link 
             href="/categories" 
-            className="bg-primary/10 text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-primary/20 transition-colors"
+            className="bg-black/10 text-black px-6 py-2.5 rounded-lg font-medium hover:bg-black/20 transition-colors"
           >
             View All Categories
           </Link>

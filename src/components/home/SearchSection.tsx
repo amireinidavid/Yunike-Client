@@ -66,7 +66,7 @@ export default function SearchSection() {
   };
 
   return (
-    <section className="py-10 bg-card border-y border-border">
+    <section className="py-10 bg-background border-y border-border">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Search Bar */}

@@ -66,6 +66,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   loginData: LoginData | null; // Added to store login data for OTP verification
+  registrationData: RegistrationData | null; // Added to store registration data for OTP verification
 
   // Set error message
   setError: (error: string | null) => void;
@@ -90,6 +91,11 @@ interface AuthState {
   verifyLogin: (email: string, otp: string, rememberMe: boolean) => Promise<User | null>;
   resendLoginOTP: (email: string) => Promise<LoginData | null>;
   
+  // Registration methods
+  register: (email: string, password: string, name: string, phone?: string) => Promise<RegistrationData | null>;
+  verifyRegistration: (registrationId: string, email: string, otp: string) => Promise<User | null>;
+  resendRegistrationOTP: (registrationId: string, email: string) => Promise<RegistrationData | null>;
+  
   // New methods for profile management
   updateProfile: (profileData: any) => Promise<boolean>;
   createCustomerProfile: (profileData: CustomerProfileData) => Promise<boolean>;
@@ -106,6 +112,7 @@ const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       loginData: null,
+      registrationData: null,
 
       setError: (error: string | null) => {
         set({ error });
@@ -135,7 +142,8 @@ const useAuthStore = create<AuthState>()(
           user: null,
           isAuthenticated: false,
           error: null,
-          loginData: null
+          loginData: null,
+          registrationData: null
         });
       },
       
@@ -296,6 +304,124 @@ const useAuthStore = create<AuthState>()(
           return null;
         } catch (error: any) {
           set({ isLoading: false, error: error.message || 'An error occurred while resending OTP' });
+          return null;
+        }
+      },
+      
+      // Register a new user
+      register: async (email: string, password: string, name: string, phone?: string): Promise<RegistrationData | null> => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const response = await api.post(authApi.REGISTER || '/api/auth/register', {
+            email,
+            password,
+            name,
+            phone
+          });
+          
+          if (response.requireOTP) {
+            const registrationData: RegistrationData = {
+              registrationId: response.registrationId,
+              email,
+              requireOTP: true,
+              expiresIn: response.expiresIn || 300,
+              expiresAt: Date.now() + ((response.expiresIn || 300) * 1000)
+            };
+            
+            set({ registrationData, isLoading: false });
+            return registrationData;
+          }
+          
+          // If no OTP required (unusual case), handle direct registration
+          if (response.accessToken && response.user) {
+            localStorage.setItem('accessToken', response.accessToken);
+            if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userData', JSON.stringify(response.user));
+            set({ 
+              accessToken: response.accessToken, 
+              user: response.user, 
+              isAuthenticated: true, 
+              registrationData: null,
+              isLoading: false
+            });
+            return null;
+          }
+          
+          set({ isLoading: false, error: 'Registration response is missing required data' });
+          return null;
+        } catch (error: any) {
+          set({ 
+            isLoading: false, 
+            error: error.message || 'An error occurred during registration'
+          });
+          return null;
+        }
+      },
+      
+      // Verify registration OTP
+      verifyRegistration: async (registrationId: string, email: string, otp: string) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const response = await api.post(authApi.VERIFY_REGISTRATION_OTP || '/api/auth/verify-registration', {
+            registrationId,
+            email,
+            otp
+          });
+          
+          if (response.accessToken && response.user) {
+            localStorage.setItem('accessToken', response.accessToken);
+            if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userData', JSON.stringify(response.user));
+            set({ 
+              accessToken: response.accessToken, 
+              user: response.user, 
+              isAuthenticated: true, 
+              registrationData: null,
+              isLoading: false
+            });
+            return response.user;
+          }
+          
+          set({ isLoading: false, error: 'Verification response missing token or user data' });
+          return null;
+        } catch (error: any) {
+          set({ 
+            isLoading: false, 
+            error: error.message || 'An error occurred during registration verification'
+          });
+          return null;
+        }
+      },
+      
+      // Resend registration OTP
+      resendRegistrationOTP: async (registrationId: string, email: string) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const response = await api.post(authApi.RESEND_REGISTRATION_OTP || '/api/auth/resend-registration-otp', {
+            registrationId,
+            email
+          });
+          
+          if (response.expiresIn) {
+            const registrationData: RegistrationData = {
+              registrationId: registrationId,
+              email,
+              requireOTP: true,
+              expiresIn: response.expiresIn || 300,
+              expiresAt: Date.now() + ((response.expiresIn || 300) * 1000)
+            };
+            
+            set({ registrationData, isLoading: false });
+            return registrationData;
+          }
+          
+          set({ isLoading: false, error: 'Failed to resend registration OTP' });
+          return null;
+        } catch (error: any) {
+          set({ isLoading: false, error: error.message || 'An error occurred while resending registration OTP' });
           return null;
         }
       },
