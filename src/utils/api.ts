@@ -36,6 +36,11 @@ export const API_ENDPOINTS = {
     VALIDATE_CART: (cartId: string): string => `/cart/${cartId}/validate`,
     APPLY_COUPON: (cartId: string): string => `/cart/${cartId}/promo`,
     REMOVE_COUPON: (cartId: string): string => `/cart/${cartId}/promo`
+  },
+  CHECKOUT: {
+    CREATE_SESSION: (cartId: string): string => `/checkout/${cartId}`,
+    GET_STATUS: (sessionId: string): string => `/checkout/status/${sessionId}`,
+    WEBHOOK: '/checkout/webhook'
   }
 };
 
@@ -47,6 +52,23 @@ export const axiosInstance = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
+// Add request interceptor to include cart token in headers
+axiosInstance.interceptors.request.use(
+  (config) => {
+    // Add cart token to headers if available
+    if (typeof window !== 'undefined') {
+      const cartToken = localStorage.getItem('cartToken');
+      if (cartToken && config.headers) {
+        config.headers['X-Cart-Authorization'] = cartToken;
+      }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Authentication API routes
 export const authApi = API_ENDPOINTS.AUTH;
@@ -94,6 +116,9 @@ export const customerApi = {
 
 // Cart API routes
 export const cartApi = API_ENDPOINTS.CART;
+
+// Checkout API routes
+export const checkoutApi = API_ENDPOINTS.CHECKOUT;
 
 // Helper functions for working with the cart API
 export const cartUtils = {
@@ -153,9 +178,19 @@ export const cartUtils = {
   }
 };
 
-// Export cart utility functions
+// Helper functions for working with the checkout API
+export const checkoutUtils = {
+  // Create a checkout session
+  createCheckoutSession: async (cartId: string, successUrl: string, cancelUrl: string) => {
+    return api.post(checkoutApi.CREATE_SESSION(cartId), { successUrl, cancelUrl });
+  },
 
-// Basic API helper functions
+  // Get checkout session status
+  getCheckoutStatus: async (sessionId: string) => {
+    return api.get(checkoutApi.GET_STATUS(sessionId));
+  }
+};
+
 // Basic API helper functions
 export const api = {
     // Get access token from cookies or localStorage
@@ -275,7 +310,7 @@ export const api = {
       }
     },
     
-    post: async (url: string, data: Record<string, any> = {}, token: string | null = null): Promise<any> => {
+    post: async (url: string, data: Record<string, any> = {}, token: string | null = null, customHeaders: Record<string, string> = {}): Promise<any> => {
       try {
         // Get the freshest token available - either passed in or from localStorage
         let accessToken = token;
@@ -285,13 +320,25 @@ export const api = {
             console.log(`🔐 Using fresh token from localStorage for POST ${url}`);
           }
         }
-        const headers: Record<string, string> = {};
+        
+        // Merge any custom headers with the default headers
+        const headers: Record<string, string> = { ...customHeaders };
+        
+        // Add authorization header if token exists
         if (accessToken) {
           headers['Authorization'] = `Bearer ${accessToken}`;
           console.log('🔐 [api.ts] Sending Authorization header:', accessToken.slice(0, 12) + '...');
         } else {
           console.warn('⚠️ [api.ts] No access token found for POST', url);
         }
+        
+        // Add cart token header if available in localStorage
+        const cartToken = localStorage.getItem('cartToken');
+        if (cartToken && !headers['X-Cart-Authorization']) {
+          headers['X-Cart-Authorization'] = cartToken;
+          console.log('🛒 [api.ts] Adding cart token header');
+        }
+        
         console.log(`Making POST request to ${url} with auth:`, !!accessToken);
         const response = await axiosInstance.post(url, data, { headers });
         return response.data;

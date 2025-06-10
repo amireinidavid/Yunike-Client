@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { cartApi } from '@/utils/api';
 import axios from 'axios';
 import { API_BASE_URL } from '@/utils/api';
+import { generateCartToken, saveCartToken, getCartToken, removeCartToken } from '@/lib/cart/cartToken';
 
 // Check if code is running in browser
 const isBrowser = typeof window !== 'undefined';
@@ -106,6 +107,7 @@ interface CartState {
   getSessionId: () => string | null;
   setError: (error: string | null) => void;
   reset: () => void;
+  syncCartAfterLogin: () => Promise<void>;
 }
 
 // Create cart API instance
@@ -696,6 +698,23 @@ const useCartStore = create<CartState>()(
             console.error("Failed to initialize cart after reset:", error);
           }
         }, 500);
+      },
+      
+      /**
+       * Sync cart after login: fetch the user's cart and update the store
+       */
+      syncCartAfterLogin: async () => {
+        // Fetch the user's cart from the backend
+        try {
+          const response = await cartApiInstance.get(cartApi.GET_USER_CART); // cartApi.GET_USER_CART is a string, not a function
+          if (response.data && response.data.success) {
+            set({ cart: response.data });
+            // Optionally, update localStorage/session if you use it
+            localStorage.setItem('cartId', response.data.id);
+          }
+        } catch (error) {
+          console.error('Failed to sync cart after login:', error);
+        }
       }
     }),
     {
